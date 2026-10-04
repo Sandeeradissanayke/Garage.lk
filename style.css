@@ -45,6 +45,7 @@ body.light-mode {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative; /* important for mobile menu */
 }
 
 body.light-mode .header {
@@ -73,6 +74,7 @@ body.light-mode .logo {
 .nav-menu {
     display: flex;
     gap: 30px;
+    align-items: center;
 }
 
 .nav-link {
@@ -94,7 +96,7 @@ body.light-mode .nav-link {
     color: inherit;
 }
 
-/* අලුත් Theme Toggle Slider CSS */
+/* Theme Toggle Slider */
 .theme-switch-wrapper {
     cursor: pointer;
     display: flex;
@@ -161,6 +163,64 @@ body.light-mode .slider-thumb {
     background: #ffffff;
 }
 
+/* ==========================================
+   MOBILE RESPONSIVENESS (Hamburger Menu)
+   ========================================== */
+.menu-toggle {
+    display: none;
+    font-size: 24px;
+    color: #fff;
+    cursor: pointer;
+}
+
+body.light-mode .menu-toggle {
+    color: #0f172a;
+}
+
+@media screen and (max-width: 992px) {
+    .menu-toggle {
+        display: block; 
+    }
+
+    .nav-menu {
+        display: none; 
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        background-color: rgba(10, 18, 38, 0.95);
+        border-radius: 14px;
+        padding: 20px 0;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .nav-menu.active {
+        display: flex; 
+    }
+
+    body.light-mode .nav-menu {
+        background-color: rgba(255, 255, 255, 0.95);
+    }
+
+    .nav-link {
+        padding: 10px 20px;
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    body.light-mode .nav-link {
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .theme-switch-wrapper {
+        margin-top: 15px;
+        display: flex;
+        justify-content: center;
+    }
+}
+
 /* Hero Section */
 .hero {
     width: 100%;
@@ -203,58 +263,21 @@ body.light-mode .slider-thumb {
     background: linear-gradient(to bottom, rgba(7, 13, 27, 0.6) 40%, #070d1b 100%);
 }
 
-.slide:nth-child(1) {
-    animation-delay: 0s;
-}
-
-.slide:nth-child(2) {
-    animation-delay: 3s;
-}
-
-.slide:nth-child(3) {
-    animation-delay: 6s;
-}
-
-.slide:nth-child(4) {
-    animation-delay: 9s;
-}
-
-.slide:nth-child(5) {
-    animation-delay: 12s;
-}
-
-.slide:nth-child(6) {
-    animation-delay: 15s;
-}
-
-.slide:nth-child(7) {
-    animation-delay: 18s;
-}
-
-.slide:nth-child(8) {
-    animation-delay: 21s;
-}
+.slide:nth-child(1) { animation-delay: 0s; }
+.slide:nth-child(2) { animation-delay: 3s; }
+.slide:nth-child(3) { animation-delay: 6s; }
+.slide:nth-child(4) { animation-delay: 9s; }
+.slide:nth-child(5) { animation-delay: 12s; }
+.slide:nth-child(6) { animation-delay: 15s; }
+.slide:nth-child(7) { animation-delay: 18s; }
+.slide:nth-child(8) { animation-delay: 21s; }
 
 @keyframes slideAnimation {
-    0% {
-        opacity: 0;
-    }
-
-    4.16% {
-        opacity: 1;
-    }
-
-    12.5% {
-        opacity: 1;
-    }
-
-    16.66% {
-        opacity: 0;
-    }
-
-    100% {
-        opacity: 0;
-    }
+    0% { opacity: 0; }
+    4.16% { opacity: 1; }
+    12.5% { opacity: 1; }
+    16.66% { opacity: 0; }
+    100% { opacity: 0; }
 }
 
 .hero-content {
@@ -331,22 +354,9 @@ body.light-mode .hero-title {
 }
 
 @keyframes bounce {
-
-    0%,
-    20%,
-    50%,
-    80%,
-    100% {
-        transform: translate(-50%, 0);
-    }
-
-    40% {
-        transform: translate(-50%, -10px);
-    }
-
-    60% {
-        transform: translate(-50%, -5px);
-    }
+    0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); }
+    40% { transform: translate(-50%, -10px); }
+    60% { transform: translate(-50%, -5px); }
 }
 
 /* Services Section */
@@ -847,6 +857,14 @@ body.light-mode .reg-srv-btn {
 /* Fix Footer Logo text color in Light Mode */
 body.light-mode .footer-logo p {
     color: #0f172a;
-    /* පැහැදිලිව පෙනෙන අඳුරු කළු/නිල් පාටක් */
     font-weight: 500;
+}
+
+@media (max-width: 650px) {
+    .services-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .hero-title {
+        font-size: 38px;
+    }
 }

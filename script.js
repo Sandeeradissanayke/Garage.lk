@@ -1,4 +1,41 @@
 // ==========================================
+// MOBILE MENU TOGGLE LOGIC
+// ==========================================
+const mobileMenu = document.getElementById('mobile-menu');
+const navMenu = document.getElementById('nav-menu');
+
+if (mobileMenu && navMenu) {
+    mobileMenu.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+        
+        // Change icon from bars to cross when menu is open
+        const icon = mobileMenu.querySelector('i');
+        if(navMenu.classList.contains('active')){
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-xmark');
+        } else {
+            icon.classList.remove('fa-xmark');
+            icon.classList.add('fa-bars');
+        }
+    });
+}
+
+// Ensure menu closes when a link is clicked
+const navLinks = document.querySelectorAll('.nav-link');
+navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        if(window.innerWidth <= 992) {
+            navMenu.classList.remove('active');
+            if(mobileMenu) {
+                const icon = mobileMenu.querySelector('i');
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            }
+        }
+    });
+});
+
+// ==========================================
 // 1. HOME PAGE SERVICE CARDS SELECTION
 // ==========================================
 function toggleService(card) {
@@ -315,4 +352,3 @@ if (findGaragesBtn && garagesMapModal) {
 }
 if (closeGaragesMapModal) closeGaragesMapModal.addEventListener('click', () => garagesMapModal.classList.remove('active'));
 if (garagesMapModal) garagesMapModal.addEventListener('click', (e) => { if (e.target === garagesMapModal) garagesMapModal.classList.remove('active'); });
-
