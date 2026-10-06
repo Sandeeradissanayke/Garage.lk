@@ -850,3 +850,14 @@ body.light-mode .footer-logo p {
     /* පැහැදිලිව පෙනෙන අඳුරු කළු/නිල් පාටක් */
     font-weight: 500;
 }
+
+/* Header Links Hover Animation */
+.nav-link {
+    transition: transform 0.3s ease, color 0.3s ease !important;
+    display: inline-block; /* Transform වැඩ කිරීම සඳහා */
+}
+
+.nav-link:hover {
+    color: #ffcc00 !important;       /* කහ පාටට හැරීම */
+    transform: translateY(-4px);     /* පික්සල් 4ක් උඩට ඉස්සීම */
+}
