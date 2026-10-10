@@ -1,4 +1,21 @@
 // ==========================================
+// 0. FIREBASE DATABASE CONNECTION
+// ==========================================
+const firebaseConfig = {
+    apiKey: "AIzaSyCDqryDjXE4mipP-sAxhEsX_j9-mr2gli0",
+    authDomain: "garage-lk-c27a9.firebaseapp.com",
+    projectId: "garage-lk-c27a9",
+    storageBucket: "garage-lk-c27a9.firebasestorage.app",
+    messagingSenderId: "974892352940",
+    appId: "1:974892352940:web:860ae44797ab1b976f6609",
+    measurementId: "G-LKS8DCNZ1L"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// ==========================================
 // 1. HOME PAGE SERVICE CARDS SELECTION
 // ==========================================
 function toggleService(card) {
@@ -12,7 +29,7 @@ function toggleService(card) {
 }
 
 // ==========================================
-// 2. DARK / LIGHT THEME TOGGLE (NEW SWITCH)
+// 2. DARK / LIGHT THEME TOGGLE
 // ==========================================
 const themeToggleBtn = document.getElementById('themeToggleBtn');
 if (themeToggleBtn) {
@@ -34,11 +51,7 @@ const signUpForm = document.getElementById('signUpForm');
 
 if (loginBtn && authModal) loginBtn.addEventListener('click', () => authModal.classList.add('active'));
 if (closeModal) closeModal.addEventListener('click', () => authModal.classList.remove('active'));
-if (authModal) {
-    authModal.addEventListener('click', (e) => {
-        if (e.target === authModal) authModal.classList.remove('active');
-    });
-}
+if (authModal) { authModal.addEventListener('click', (e) => { if (e.target === authModal) authModal.classList.remove('active'); }); }
 if (signInTabBtn && signUpTabBtn) {
     signInTabBtn.addEventListener('click', () => {
         signInTabBtn.classList.add('active'); signUpTabBtn.classList.remove('active');
@@ -50,32 +63,9 @@ if (signInTabBtn && signUpTabBtn) {
     });
 }
 
-// ==========================================
-// 4. GARAGE DATA STORAGE LOGIC (LOCAL STORAGE)
-// ==========================================
-const initialGarages = [
-    { name: "Saman Auto Care (Colombo)", lat: 6.9271, lng: 79.8612, phone: "0771111111", services: ["engine", "tyre", "oil", "battery"] },
-    { name: "Colombo Quick Fix", lat: 6.9350, lng: 79.8500, phone: "0772221111", services: ["towing", "ac", "fuel"] },
-    { name: "Nuwan Motors (Kottawa)", lat: 6.8449, lng: 79.9916, phone: "0772222222", services: ["towing", "fuel", "engine"] },
-    { name: "Gampaha Auto", lat: 7.0840, lng: 80.0098, phone: "0773332222", services: ["tyre", "battery", "ac"] },
-    { name: "Kumara Garage (Kandy)", lat: 7.2906, lng: 80.6337, phone: "0773333333", services: ["battery", "ac", "tyre", "engine"] },
-    { name: "Kandy Towing", lat: 7.2800, lng: 80.6400, phone: "0774443333", services: ["towing", "fuel", "other"] },
-    { name: "Galle Auto Fix (Galle)", lat: 6.0328, lng: 80.2168, phone: "0774444444", services: ["engine", "oil", "battery", "tyre"] },
-    { name: "Matara Repairs (Matara)", lat: 5.9549, lng: 80.5469, phone: "0775555555", services: ["tyre", "ac", "other"] },
-    { name: "Kurunegala Auto", lat: 7.4818, lng: 80.3609, phone: "0776666666", services: ["towing", "engine", "fuel"] },
-    { name: "Negombo Quick Fix", lat: 7.2008, lng: 79.8362, phone: "0777777777", services: ["fuel", "battery", "tyre"] },
-    { name: "Anuradhapura Care", lat: 8.3114, lng: 80.4037, phone: "0779999999", services: ["tyre", "towing", "battery", "ac"] },
-    { name: "Jaffna Auto Works", lat: 9.6615, lng: 80.0255, phone: "0770000000", services: ["engine", "oil", "fuel", "other"] }
-];
-
-let registeredGarages = JSON.parse(localStorage.getItem('savedGarages'));
-if (!registeredGarages) {
-    registeredGarages = initialGarages;
-    localStorage.setItem('savedGarages', JSON.stringify(registeredGarages));
-}
 
 // ==========================================
-// 5. GARAGE REGISTRATION MODAL & MAP LOGIC
+// 4. GARAGE REGISTRATION (SAVING TO FIREBASE)
 // ==========================================
 const registerLink = document.getElementById('registerLink');
 const registerModal = document.getElementById('registerModal');
@@ -94,7 +84,6 @@ if (registerLink && registerModal) {
             if (!registerMap) {
                 registerMap = L.map('registerMap').setView([7.8731, 80.7718], 7);
                 L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles &copy; Esri' }).addTo(registerMap);
-
                 registerMarker = L.marker([7.8731, 80.7718], { draggable: true }).addTo(registerMap);
 
                 registerMarker.on('dragend', function () {
@@ -132,7 +121,7 @@ regSrvBtns.forEach(btn => {
     });
 });
 
-// Submit New Garage
+// Submit New Garage to Firebase
 if (registerGarageForm) {
     registerGarageForm.addEventListener('submit', function (e) {
         e.preventDefault();
@@ -151,39 +140,49 @@ if (registerGarageForm) {
         const gName = document.querySelector('input[placeholder="Enter garage name"]').value;
         const gPhone = document.querySelector('input[placeholder="Enter contact number"]').value;
         const locCoords = document.getElementById('locationCoordinates').value;
-
         if (!locCoords) { alert("කරුණාකර සිතියමේ ඔබගේ ස්ථානය ලකුණු කරන්න."); return; }
 
         const coordsArray = locCoords.split(',');
-        const lat = parseFloat(coordsArray[0]);
-        const lng = parseFloat(coordsArray[1]);
-
         const newGarage = {
-            name: gName + " (New)",
-            lat: lat,
-            lng: lng,
+            name: gName,
+            lat: parseFloat(coordsArray[0]),
+            lng: parseFloat(coordsArray[1]),
             phone: gPhone,
             services: selectedRegServices
         };
 
-        registeredGarages.push(newGarage);
-        localStorage.setItem('savedGarages', JSON.stringify(registeredGarages));
+        const submitBtn = document.querySelector('#registerGarageForm .submit-btn');
+        submitBtn.innerHTML = "SAVING TO DATABASE...";
 
-        alert("Registration Successfully! ඔබගේ ගරාජය සිතියමට එක් කරන ලදී.");
-
-        registerGarageForm.reset();
-        document.querySelectorAll('.reg-srv-btn.active').forEach(btn => btn.classList.remove('active'));
-        if (registerMarker) {
-            registerMarker.setLatLng([7.8731, 80.7718]);
-            document.getElementById('locationCoordinates').value = '';
-        }
-        registerModal.classList.remove('active');
+        // Firebase එකට දත්ත යැවීම
+        db.collection("garages").add(newGarage).then(() => {
+            alert("Registration Successfully! ඔබගේ ගරාජය අන්තර්ජාල දත්ත සමුදායට එක් කරන ලදී.");
+            registerGarageForm.reset();
+            document.querySelectorAll('.reg-srv-btn.active').forEach(btn => btn.classList.remove('active'));
+            if (registerMarker) {
+                registerMarker.setLatLng([7.8731, 80.7718]);
+                document.getElementById('locationCoordinates').value = '';
+            }
+            registerModal.classList.remove('active');
+            submitBtn.innerHTML = "SUBMIT REGISTRATION";
+        }).catch((error) => {
+            console.error("Error adding document: ", error);
+            alert("දත්ත ඇතුළත් කිරීමේදී දෝෂයක් මතු විය. කරුණාකර Firebase Firestore Security Rules පරීක්ෂා කරන්න.");
+            submitBtn.innerHTML = "SUBMIT REGISTRATION";
+        });
     });
 }
 
 // ==========================================
-// 6. FIND NEARBY GARAGES LOGIC (Distance & Filter)
+// 5. FIND NEARBY GARAGES (FETCHING FROM FIREBASE)
 // ==========================================
+const initialGarages = [
+    { name: "Saman Auto Care (Colombo)", lat: 6.9271, lng: 79.8612, phone: "0771111111", services: ["engine", "tyre", "oil", "battery"] },
+    { name: "Colombo Quick Fix", lat: 6.9350, lng: 79.8500, phone: "0772221111", services: ["towing", "ac", "fuel"] },
+    { name: "Kumara Garage (Kandy)", lat: 7.2906, lng: 80.6337, phone: "0773333333", services: ["battery", "ac", "tyre", "engine"] },
+    { name: "Galle Auto Fix (Galle)", lat: 6.0328, lng: 80.2168, phone: "0774444444", services: ["engine", "oil", "battery", "tyre"] }
+];
+
 const findGaragesBtn = document.getElementById('findGaragesBtn');
 const useCurrentLocBtn = document.getElementById('useCurrentLocBtn');
 const searchAreaInput = document.getElementById('searchAreaInput');
@@ -231,6 +230,8 @@ if (findGaragesBtn && garagesMapModal) {
         let searchLng = null;
 
         findGaragesBtn.innerHTML = "SEARCHING...";
+
+        // 1. Get Coordinates
         if (userCoords) {
             searchLat = userCoords[0];
             searchLng = userCoords[1];
@@ -244,75 +245,95 @@ if (findGaragesBtn && garagesMapModal) {
                 } else {
                     alert("ඔබ ලබාදුන් නගරය සිතියමේ සොයාගත නොහැක.");
                 }
-            } catch (err) {
-                console.log(err);
-            }
+            } catch (err) { console.log(err); }
         }
-        findGaragesBtn.innerHTML = "FIND NEARBY GARAGES";
 
-        const filteredGarages = registeredGarages.filter(garage => {
-            let serviceMatch = true;
-            if (selectedServices.length > 0) {
-                serviceMatch = selectedServices.some(service => garage.services.includes(service));
-            }
+        // 2. Fetch Data from Firebase
+        try {
+            const snapshot = await db.collection("garages").get();
+            let allGarages = [];
+            snapshot.forEach(doc => allGarages.push(doc.data()));
 
-            let distanceMatch = true;
-            if (searchLat !== null && searchLng !== null) {
-                const dist = getDistance(searchLat, searchLng, garage.lat, garage.lng);
-                if (dist > 30) {
-                    distanceMatch = false;
+            // Database එක හිස් නම් උදාහරණ ගරාජ් ටික ස්වයංක්‍රීයව Database එකට අප්ලෝඩ් කිරීම
+            if (allGarages.length === 0) {
+                console.log("Database is empty. Uploading initial dummy data...");
+                for (let g of initialGarages) {
+                    await db.collection("garages").add(g);
+                    allGarages.push(g);
                 }
             }
-            return serviceMatch && distanceMatch;
-        });
 
-        if (filteredGarages.length === 0) {
-            alert("මෙම ප්‍රදේශයේ ඔබ තෝරාගත් සේවාවන් සහිත ගරාජ් කිසිවක් දැනට ලියාපදිංචි වී නොමැත.");
-            return;
-        }
+            // 3. Filter Data
+            const filteredGarages = allGarages.filter(garage => {
+                let serviceMatch = true;
+                if (selectedServices.length > 0) {
+                    // ගරාජ් එකේ services අඩංගුදැයි බැලීම
+                    if (!garage.services) return false;
+                    serviceMatch = selectedServices.some(service => garage.services.includes(service));
+                }
 
-        garagesMapModal.classList.add('active');
-
-        setTimeout(() => {
-            if (!resultsMap) {
-                resultsMap = L.map('resultsMap').setView([7.8731, 80.7718], 8);
-                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles &copy; Esri' }).addTo(resultsMap);
-            }
-
-            resultsMap.eachLayer((layer) => { if (layer instanceof L.Marker) resultsMap.removeLayer(layer); });
-
-            const garageIcon = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
-            const userIcon = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
-
-            filteredGarages.forEach(garage => {
-                let distText = "";
-                if (searchLat && searchLng) {
+                let distanceMatch = true;
+                if (searchLat !== null && searchLng !== null) {
                     const dist = getDistance(searchLat, searchLng, garage.lat, garage.lng);
-                    distText = `<p style="margin:0 0 5px 0; font-size:12px; color:red;"><b>Distance:</b> ${dist.toFixed(1)} km</p>`;
+                    if (dist > 30) distanceMatch = false;
                 }
-
-                const popupContent = `
-                    <div style="color: black; width: 180px;">
-                        <h4 style="margin:0 0 5px 0;">${garage.name}</h4>
-                        <p style="margin:0 0 5px 0; font-size:12px;"><b>Services:</b> ${garage.services.join(", ")}</p>
-                        <p style="margin:0 0 5px 0; font-size:12px;"><b>Phone:</b> ${garage.phone}</p>
-                        ${distText}
-                        <button onclick="alert('${garage.name} වෙත ඉල්ලීම යවන ලදී.')" style="background:#1d3eff; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer; width:100%; font-weight:bold;">Request Mechanic</button>
-                    </div>`;
-                L.marker([garage.lat, garage.lng], { icon: garageIcon }).addTo(resultsMap).bindPopup(popupContent);
+                return serviceMatch && distanceMatch;
             });
 
-            if (searchLat !== null && searchLng !== null) {
-                L.marker([searchLat, searchLng], { icon: userIcon }).addTo(resultsMap).bindPopup("<b>You are here!</b>").openPopup();
-                resultsMap.setView([searchLat, searchLng], 12);
-            } else {
-                resultsMap.setView([7.8731, 80.7718], 7);
+            findGaragesBtn.innerHTML = "FIND NEARBY GARAGES";
+
+            if (filteredGarages.length === 0) {
+                alert("මෙම ප්‍රදේශයේ ඔබ තෝරාගත් සේවාවන් සහිත ගරාජ් කිසිවක් දැනට ලියාපදිංචි වී නොමැත.");
+                return;
             }
 
-            resultsMap.invalidateSize();
-        }, 400);
+            // 4. Show on Map
+            garagesMapModal.classList.add('active');
+
+            setTimeout(() => {
+                if (!resultsMap) {
+                    resultsMap = L.map('resultsMap').setView([7.8731, 80.7718], 8);
+                    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles &copy; Esri' }).addTo(resultsMap);
+                }
+
+                resultsMap.eachLayer((layer) => { if (layer instanceof L.Marker) resultsMap.removeLayer(layer); });
+
+                const garageIcon = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
+                const userIcon = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
+
+                filteredGarages.forEach(garage => {
+                    let distText = "";
+                    if (searchLat && searchLng) {
+                        const dist = getDistance(searchLat, searchLng, garage.lat, garage.lng);
+                        distText = `<p style="margin:0 0 5px 0; font-size:12px; color:red;"><b>Distance:</b> ${dist.toFixed(1)} km</p>`;
+                    }
+
+                    const popupContent = `
+                        <div style="color: black; width: 180px;">
+                            <h4 style="margin:0 0 5px 0;">${garage.name}</h4>
+                            <p style="margin:0 0 5px 0; font-size:12px;"><b>Services:</b> ${garage.services ? garage.services.join(", ") : "N/A"}</p>
+                            <p style="margin:0 0 5px 0; font-size:12px;"><b>Phone:</b> ${garage.phone}</p>
+                            ${distText}
+                            <button onclick="alert('${garage.name} වෙත ඉල්ලීම යවන ලදී.')" style="background:#1d3eff; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer; width:100%; font-weight:bold;">Request Mechanic</button>
+                        </div>`;
+                    L.marker([garage.lat, garage.lng], { icon: garageIcon }).addTo(resultsMap).bindPopup(popupContent);
+                });
+
+                if (searchLat !== null && searchLng !== null) {
+                    L.marker([searchLat, searchLng], { icon: userIcon }).addTo(resultsMap).bindPopup("<b>You are here!</b>").openPopup();
+                    resultsMap.setView([searchLat, searchLng], 12);
+                } else {
+                    resultsMap.setView([7.8731, 80.7718], 7);
+                }
+                resultsMap.invalidateSize();
+            }, 400);
+
+        } catch (error) {
+            console.error("Error fetching data: ", error);
+            alert("අන්තර්ජාලයෙන් දත්ත ලබා ගැනීමේදී දෝෂයක් ඇති විය.");
+            findGaragesBtn.innerHTML = "FIND NEARBY GARAGES";
+        }
     });
 }
 if (closeGaragesMapModal) closeGaragesMapModal.addEventListener('click', () => garagesMapModal.classList.remove('active'));
 if (garagesMapModal) garagesMapModal.addEventListener('click', (e) => { if (e.target === garagesMapModal) garagesMapModal.classList.remove('active'); });
-

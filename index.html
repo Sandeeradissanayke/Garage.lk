@@ -25,40 +25,42 @@
     <header class="header-container">
         <div class="header">
             <div class="logo-container">
-                <!-- href="#" යන්න href="#home" ලෙස වෙනස් කර ඇත -->
                 <a href="#home" class="logo-link">
                     <h1 class="logo">GARAGE<span class="lk">.lk</span></h1>
                 </a>
             </div>
 
-            <nav class="nav-menu">
+            <!-- Mobile Menu Toggle Icon -->
+            <div class="menu-toggle" id="mobile-menu">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="nav-menu" id="nav-menu">
                 <a href="#services" class="nav-link">Services</a>
                 <a href="#services" class="nav-link">Find Garages</a>
-                <a href="#" class="nav-link">News</a>
+                <a href="news.html" class="nav-link">News</a>
                 <a href="#" class="nav-link" id="registerLink">Register Garage</a>
                 <a href="#about" class="nav-link">About Us</a>
                 <a href="#contact" class="nav-link">Contact</a>
-            </nav>
 
-            <!-- අලුත් Theme Toggle Switch එක -->
-            <div class="theme-switch-wrapper" id="themeToggleBtn">
-                <div class="theme-switch">
-                    <i class="fa-solid fa-sun icon-sun"></i>
-                    <i class="fa-solid fa-moon icon-moon"></i>
-                    <div class="slider-thumb"></div>
+                <!-- Theme Toggle Switch (Moved inside nav for mobile view) -->
+                <div class="theme-switch-wrapper" id="themeToggleBtn">
+                    <div class="theme-switch">
+                        <i class="fa-solid fa-sun icon-sun"></i>
+                        <i class="fa-solid fa-moon icon-moon"></i>
+                        <div class="slider-thumb"></div>
+                    </div>
                 </div>
-            </div>
-
+            </nav>
         </div>
     </header>
 
     <!-- Hero Section -->
-    <!-- Hero Section යන්නට id="home" එකතු කර ඇත -->
     <section class="hero" id="home">
 
         <div class="slideshow">
             <div class="slide" style="background-image: url('Tyer.jpg');"></div>
-            <!-- අනෙකුත් පින්තූර... -->
             <div class="slide" style="background-image: url('Tyer.jpg');"></div>
             <div class="slide" style="background-image: url('Towing.webp');"></div>
             <div class="slide" style="background-image: url('Battery.webp');"></div>
@@ -292,8 +294,15 @@
             </div>
         </div>
     </div>
+    <!-- Firebase DataBase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore-compat.js"></script>
 
     <script src="script.js"></script>
+</body>
+
+</html>
+<script src="script.js"></script>
 </body>
 
 </html>
