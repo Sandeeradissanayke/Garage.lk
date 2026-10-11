@@ -314,7 +314,7 @@ if (findGaragesBtn && garagesMapModal) {
                             <p style="margin:0 0 5px 0; font-size:12px;"><b>Services:</b> ${garage.services ? garage.services.join(", ") : "N/A"}</p>
                             <p style="margin:0 0 5px 0; font-size:12px;"><b>Phone:</b> ${garage.phone}</p>
                             ${distText}
-                            <button onclick="alert('${garage.name} වෙත ඉල්ලීම යවන ලදී.')" style="background:#1d3eff; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer; width:100%; font-weight:bold;">Request Mechanic</button>
+                            <button onclick="sendMechanicRequest('${garage.phone}', '${garage.name}', this)" style="background:#1d3eff; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer; width:100%; font-weight:bold;">Request Mechanic</button>
                         </div>`;
                     L.marker([garage.lat, garage.lng], { icon: garageIcon }).addTo(resultsMap).bindPopup(popupContent);
                 });
@@ -337,3 +337,35 @@ if (findGaragesBtn && garagesMapModal) {
 }
 if (closeGaragesMapModal) closeGaragesMapModal.addEventListener('click', () => garagesMapModal.classList.remove('active'));
 if (garagesMapModal) garagesMapModal.addEventListener('click', (e) => { if (e.target === garagesMapModal) garagesMapModal.classList.remove('active'); });
+
+// ==========================================
+// 6. SEND MECHANIC REQUEST TO FIREBASE
+// ==========================================
+window.sendMechanicRequest = function (garagePhone, garageName, btnElement) {
+    const originalText = btnElement.innerHTML;
+    btnElement.innerHTML = "SENDING...";
+    btnElement.disabled = true;
+
+    const requestData = {
+        garagePhone: garagePhone, // ගරාජය හඳුනාගැනීමට දුරකථන අංකය භාවිතා කිරීම
+        garageName: garageName,
+        customerLat: userCoords ? userCoords[0] : null,
+        customerLng: userCoords ? userCoords[1] : null,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        status: "pending"
+    };
+
+    // Firebase 'requests' Collection එකට දත්ත ඇතුළත් කිරීම
+    db.collection("requests").add(requestData)
+        .then(() => {
+            alert(garageName + " වෙත ඔබගේ ඉල්ලීම සාර්ථකව යවන ලදී! ඔවුන් ඉක්මනින් ඔබව සම්බන්ධ කරගනු ඇත.");
+            btnElement.innerHTML = "REQUEST SENT";
+            btnElement.style.background = "#25d366"; // කොළ පාට වීම
+        })
+        .catch((error) => {
+            console.error("Error sending request: ", error);
+            alert("ඉල්ලීම යැවීමේදී දෝෂයක් මතු විය.");
+            btnElement.innerHTML = originalText;
+            btnElement.disabled = false;
+        });
+};
