@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GARAGE.lk - News Details</title>
+
+    <!-- Local CSS and Icons -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="stylenewsin.css">
+    <link rel="stylesheet" href="fontawesome/css/all.min.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header-container">
+        <div class="header">
+            <div class="logo-container">
+                <a href="index.html" class="logo-link">
+                    <h1 class="logo">GARAGE<span class="lk">.lk</span></h1>
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle Icon -->
+            <div class="menu-toggle" id="mobile-menu">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="nav-menu" id="nav-menu">
+                <a href="index.html#services" class="nav-link">Services</a>
+                <a href="index.html#services" class="nav-link">Find garages</a>
+                <a href="news.html" class="nav-link active-page">News</a>
+                <a href="index.html" class="nav-link" id="registerLink">Register Garage</a>
+                <a href="index.html#about" class="nav-link">About us</a>
+                <a href="index.html#contact" class="nav-link">Contact</a>
+                
+                <!-- Theme Toggle Switch -->
+                <div class="theme-switch-wrapper" id="themeToggleBtn">
+                    <div class="theme-switch">
+                        <i class="fa-solid fa-sun icon-sun"></i>
+                        <i class="fa-solid fa-moon icon-moon"></i>
+                        <div class="slider-thumb"></div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main News Detail Content -->
+    <main class="news-detail-main">
+        <div class="news-detail-container">
+            
+            <!-- Breadcrumbs -->
+            <div class="breadcrumbs">
+                <a href="index.html">Home</a> / <a href="news.html">News</a> / <span>GARAGE.Lk Launches Colombo Connect As...</span>
+            </div>
+
+            <!-- News Title -->
+            <h1 class="news-detail-title">GARAGE.LK 'Nena Pahana'<br>Brings Human Connection<br>To The Digital Platform Economy</h1>
+            
+            <!-- News Meta Date -->
+            <div class="news-detail-meta">
+                <span>August 14, 2026</span>
+                <hr>
+            </div>
+
+            <!-- Main Image -->
+            <div class="news-detail-image-wrapper">
+                <img src="FuelDelivery.jpg" alt="News Detail Image" class="news-detail-image">
+            </div>
+
+            <!-- News Text Content -->
+            <div class="news-detail-content">
+                <p>The Official Launch Of Colombo Connect Under The New PickMe Explore Platform, With The Iconic Colombo Lotus Tower As Its First Flagship Destination! Colombo Connect Is A Step Towards Making It Easier To Discover, Explore And Experience More Of The City By Bringing Attractions, Experiences, Culture, Entertainment And Commerce Closer Together Through One Digital Ecosystem, PickMe.</p>
+                
+                <!-- HIDDEN EXTRA CONTENT -->
+                <div id="extraNewsContent" class="extra-content hidden">
+                    <p>This initiative aims to bring a seamless digital experience to the local community, integrating transport, food delivery, and logistics into one unified application. The Lotus Tower serves as the perfect iconic backdrop for this futuristic vision, emphasizing technological growth, innovation, and connectivity in the heart of Colombo. It also offers multiple promotional discounts for early users.</p>
+                </div>
+            </div>
+            
+            <!-- Learn More Button -->
+            <div class="learn-more-container">
+                <button id="newsLearnMoreBtn" class="learn-more-btn">Learn more <i class="fa-solid fa-arrow-down"></i></button>
+            </div>
+            
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="footer-container" id="about">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h2>GARAGE<span class="lk">.lk</span></h2>
+                <p>Find the best nearby garages and vehicle services in seconds.</p>
+            </div>
+            <div class="footer-links">
+                <h4>QUICK LINKS</h4>
+                <ul>
+                    <li><a href="index.html#services">Services</a></li>
+                    <li><a href="index.html#services">Find Garages</a></li>
+                    <li><a href="news.html">News</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact" id="contact">
+                <h4>CONTACT US</h4>
+                <p><i class="fa-solid fa-phone"></i> +94 77 240 0594</p>
+                <p><i class="fa-solid fa-envelope"></i> support@garage.lk</p>
+                <div class="social-icons">
+                    <a href="https://wa.me/94772400594" target="_blank" class="social-icon whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
+                    <a href="https://web.facebook.com/profile.php?id=61595258724424" target="_blank" class="social-icon facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://instagram.com" target="_blank" class="social-icon instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="tel:+94772400594" class="social-icon phone"><i class="fa-solid fa-phone"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 GARAGE.lk. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script src="newsScript.js"></script>
+
+    <!-- Script for Learn More Toggle -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const learnMoreBtn = document.getElementById('newsLearnMoreBtn');
+            const extraContent = document.getElementById('extraNewsContent');
+
+            if(learnMoreBtn && extraContent) {
+                learnMoreBtn.addEventListener('click', function() {
+                    if (extraContent.classList.contains('hidden')) {
+                        // Show content
+                        extraContent.classList.remove('hidden');
+                        this.innerHTML = 'Show less <i class="fa-solid fa-arrow-up"></i>';
+                    } else {
+                        // Hide content
+                        extraContent.classList.add('hidden');
+                        this.innerHTML = 'Learn more <i class="fa-solid fa-arrow-down"></i>';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

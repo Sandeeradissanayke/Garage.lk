@@ -63,7 +63,6 @@ if (signInTabBtn && signUpTabBtn) {
     });
 }
 
-
 // ==========================================
 // 4. GARAGE REGISTRATION (SAVING TO FIREBASE)
 // ==========================================
