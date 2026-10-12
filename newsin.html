@@ -14,10 +14,15 @@
     <!-- Header Section -->
     <header class="header-container">
         <div class="header">
-            <div class="logo-container">
-                <a href="index.html" class="logo-link">
-                    <h1 class="logo">GARAGE<span class="lk">.lk</span></h1>
+            <div class="header-left-group">
+                <a href="javascript:history.back()" class="back-btn" title="Go Back">
+                    <i class="fa-solid fa-arrow-left"></i>
                 </a>
+                <div class="logo-container">
+                    <a href="index.html" class="logo-link">
+                        <h1 class="logo">GARAGE<span class="lk">.lk</span></h1>
+                    </a>
+                </div>
             </div>
 
             <!-- Mobile Menu Toggle Icon -->
@@ -30,7 +35,7 @@
                 <a href="index.html#services" class="nav-link">Services</a>
                 <a href="index.html#services" class="nav-link">Find garages</a>
                 <a href="news.html" class="nav-link active-page">News</a>
-                <a href="index.html" class="nav-link" id="registerLink">Register Garage</a>
+                <a href="register.html" class="nav-link">Register Garage</a>
                 <a href="index.html#about" class="nav-link">About us</a>
                 <a href="index.html#contact" class="nav-link">Contact</a>
                 
@@ -119,11 +124,6 @@
         </div>
     </footer>
 
-    <!-- Scripts -->
-    <script src="script.js"></script>
-    <script src="newsScript.js"></script>
-
-    <!-- Script for Learn More Toggle -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const learnMoreBtn = document.getElementById('newsLearnMoreBtn');
@@ -132,11 +132,9 @@
             if(learnMoreBtn && extraContent) {
                 learnMoreBtn.addEventListener('click', function() {
                     if (extraContent.classList.contains('hidden')) {
-                        // Show content
                         extraContent.classList.remove('hidden');
                         this.innerHTML = 'Show less <i class="fa-solid fa-arrow-up"></i>';
                     } else {
-                        // Hide content
                         extraContent.classList.add('hidden');
                         this.innerHTML = 'Learn more <i class="fa-solid fa-arrow-down"></i>';
                     }
@@ -144,5 +142,7 @@
             }
         });
     </script>
+    <script src="script.js"></script>
+    <script src="newsScript.js"></script>
 </body>
 </html>

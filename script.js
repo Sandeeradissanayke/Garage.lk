@@ -11,7 +11,6 @@ const firebaseConfig = {
     measurementId: "G-LKS8DCNZ1L"
 };
 
-// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
@@ -64,55 +63,43 @@ if (signInTabBtn && signUpTabBtn) {
 }
 
 // ==========================================
-// 4. GARAGE REGISTRATION (SAVING TO FIREBASE)
+// 4. GARAGE REGISTRATION (register.html eken run wenawa)
 // ==========================================
-const registerLink = document.getElementById('registerLink');
-const registerModal = document.getElementById('registerModal');
-const closeRegisterModal = document.getElementById('closeRegisterModal');
 const registerGarageForm = document.getElementById('registerGarageForm');
-
 let registerMap;
 let registerMarker;
 
-if (registerLink && registerModal) {
-    registerLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        registerModal.classList.add('active');
+document.addEventListener('DOMContentLoaded', () => {
+    const mapContainer = document.getElementById('registerMap');
+    if (mapContainer) {
+        registerMap = L.map('registerMap').setView([7.8731, 80.7718], 7);
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles &copy; Esri' }).addTo(registerMap);
+        registerMarker = L.marker([7.8731, 80.7718], { draggable: true }).addTo(registerMap);
 
-        setTimeout(() => {
-            if (!registerMap) {
-                registerMap = L.map('registerMap').setView([7.8731, 80.7718], 7);
-                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles &copy; Esri' }).addTo(registerMap);
-                registerMarker = L.marker([7.8731, 80.7718], { draggable: true }).addTo(registerMap);
+        registerMarker.on('dragend', function () {
+            const pos = registerMarker.getLatLng();
+            document.getElementById('locationCoordinates').value = pos.lat.toFixed(5) + ", " + pos.lng.toFixed(5);
+        });
 
-                registerMarker.on('dragend', function () {
-                    const pos = registerMarker.getLatLng();
-                    document.getElementById('locationCoordinates').value = pos.lat.toFixed(5) + ", " + pos.lng.toFixed(5);
-                });
+        registerMap.on('click', function (e) {
+            registerMarker.setLatLng(e.latlng);
+            document.getElementById('locationCoordinates').value = e.latlng.lat.toFixed(5) + ", " + e.latlng.lng.toFixed(5);
+        });
 
-                registerMap.on('click', function (e) {
-                    registerMarker.setLatLng(e.latlng);
-                    document.getElementById('locationCoordinates').value = e.latlng.lat.toFixed(5) + ", " + e.latlng.lng.toFixed(5);
-                });
+        if (typeof L.Control.Geocoder !== 'undefined') {
+            L.Control.geocoder({ defaultMarkGeocode: false, placeholder: "Search location..." })
+                .on('markgeocode', function (e) {
+                    const latlng = e.geocode.center;
+                    registerMarker.setLatLng(latlng);
+                    registerMap.setView(latlng, 15);
+                    document.getElementById('locationCoordinates').value = latlng.lat.toFixed(5) + ", " + latlng.lng.toFixed(5);
+                }).addTo(registerMap);
+        }
 
-                if (typeof L.Control.Geocoder !== 'undefined') {
-                    L.Control.geocoder({ defaultMarkGeocode: false, placeholder: "Search location..." })
-                        .on('markgeocode', function (e) {
-                            const latlng = e.geocode.center;
-                            registerMarker.setLatLng(latlng);
-                            registerMap.setView(latlng, 15);
-                            document.getElementById('locationCoordinates').value = latlng.lat.toFixed(5) + ", " + latlng.lng.toFixed(5);
-                        }).addTo(registerMap);
-                }
-            }
-            registerMap.invalidateSize();
-        }, 400);
-    });
-}
-if (closeRegisterModal) closeRegisterModal.addEventListener('click', () => registerModal.classList.remove('active'));
-if (registerModal) registerModal.addEventListener('click', (e) => { if (e.target === registerModal) registerModal.classList.remove('active'); });
+        setTimeout(() => { registerMap.invalidateSize(); }, 300);
+    }
+});
 
-// Registration Services Selection Buttons
 const regSrvBtns = document.querySelectorAll('.reg-srv-btn');
 regSrvBtns.forEach(btn => {
     btn.addEventListener('click', function () {
@@ -120,7 +107,6 @@ regSrvBtns.forEach(btn => {
     });
 });
 
-// Submit New Garage to Firebase
 if (registerGarageForm) {
     registerGarageForm.addEventListener('submit', function (e) {
         e.preventDefault();
@@ -153,7 +139,6 @@ if (registerGarageForm) {
         const submitBtn = document.querySelector('#registerGarageForm .submit-btn');
         submitBtn.innerHTML = "SAVING TO DATABASE...";
 
-        // Firebase එකට දත්ත යැවීම
         db.collection("garages").add(newGarage).then(() => {
             alert("Registration Successfully! ඔබගේ ගරාජය අන්තර්ජාල දත්ත සමුදායට එක් කරන ලදී.");
             registerGarageForm.reset();
@@ -162,8 +147,8 @@ if (registerGarageForm) {
                 registerMarker.setLatLng([7.8731, 80.7718]);
                 document.getElementById('locationCoordinates').value = '';
             }
-            registerModal.classList.remove('active');
             submitBtn.innerHTML = "SUBMIT REGISTRATION";
+            window.location.href = "index.html"; 
         }).catch((error) => {
             console.error("Error adding document: ", error);
             alert("දත්ත ඇතුළත් කිරීමේදී දෝෂයක් මතු විය. කරුණාකර Firebase Firestore Security Rules පරීක්ෂා කරන්න.");
@@ -230,7 +215,6 @@ if (findGaragesBtn && garagesMapModal) {
 
         findGaragesBtn.innerHTML = "SEARCHING...";
 
-        // 1. Get Coordinates
         if (userCoords) {
             searchLat = userCoords[0];
             searchLng = userCoords[1];
@@ -247,26 +231,21 @@ if (findGaragesBtn && garagesMapModal) {
             } catch (err) { console.log(err); }
         }
 
-        // 2. Fetch Data from Firebase
         try {
             const snapshot = await db.collection("garages").get();
             let allGarages = [];
             snapshot.forEach(doc => allGarages.push(doc.data()));
 
-            // Database එක හිස් නම් උදාහරණ ගරාජ් ටික ස්වයංක්‍රීයව Database එකට අප්ලෝඩ් කිරීම
             if (allGarages.length === 0) {
-                console.log("Database is empty. Uploading initial dummy data...");
                 for (let g of initialGarages) {
                     await db.collection("garages").add(g);
                     allGarages.push(g);
                 }
             }
 
-            // 3. Filter Data
             const filteredGarages = allGarages.filter(garage => {
                 let serviceMatch = true;
                 if (selectedServices.length > 0) {
-                    // ගරාජ් එකේ services අඩංගුදැයි බැලීම
                     if (!garage.services) return false;
                     serviceMatch = selectedServices.some(service => garage.services.includes(service));
                 }
@@ -286,7 +265,6 @@ if (findGaragesBtn && garagesMapModal) {
                 return;
             }
 
-            // 4. Show on Map
             garagesMapModal.classList.add('active');
 
             setTimeout(() => {
@@ -346,7 +324,7 @@ window.sendMechanicRequest = function (garagePhone, garageName, btnElement) {
     btnElement.disabled = true;
 
     const requestData = {
-        garagePhone: garagePhone, // ගරාජය හඳුනාගැනීමට දුරකථන අංකය භාවිතා කිරීම
+        garagePhone: garagePhone, 
         garageName: garageName,
         customerLat: userCoords ? userCoords[0] : null,
         customerLng: userCoords ? userCoords[1] : null,
@@ -354,12 +332,11 @@ window.sendMechanicRequest = function (garagePhone, garageName, btnElement) {
         status: "pending"
     };
 
-    // Firebase 'requests' Collection එකට දත්ත ඇතුළත් කිරීම
     db.collection("requests").add(requestData)
         .then(() => {
             alert(garageName + " වෙත ඔබගේ ඉල්ලීම සාර්ථකව යවන ලදී! ඔවුන් ඉක්මනින් ඔබව සම්බන්ධ කරගනු ඇත.");
             btnElement.innerHTML = "REQUEST SENT";
-            btnElement.style.background = "#25d366"; // කොළ පාට වීම
+            btnElement.style.background = "#25d366"; 
         })
         .catch((error) => {
             console.error("Error sending request: ", error);

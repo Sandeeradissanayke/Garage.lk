@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,15 +9,19 @@
     <link rel="stylesheet" href="stylenews.css">
     <link rel="stylesheet" href="fontawesome/css/all.min.css">
 </head>
-
 <body>
     <!-- Header Section -->
     <header class="header-container">
         <div class="header">
-            <div class="logo-container">
-                <a href="index.html" class="logo-link">
-                    <h1 class="logo">GARAGE<span class="lk">.lk</span></h1>
+            <div class="header-left-group">
+                <a href="javascript:history.back()" class="back-btn" title="Go Back">
+                    <i class="fa-solid fa-arrow-left"></i>
                 </a>
+                <div class="logo-container">
+                    <a href="index.html" class="logo-link">
+                        <h1 class="logo">GARAGE<span class="lk">.lk</span></h1>
+                    </a>
+                </div>
             </div>
 
             <!-- Mobile Menu Toggle Icon -->
@@ -31,7 +34,7 @@
                 <a href="index.html#services" class="nav-link">Services</a>
                 <a href="index.html#services" class="nav-link">Find Garages</a>
                 <a href="news.html" class="nav-link active-page">News</a>
-                <a href="index.html" class="nav-link" id="registerLink">Register Garage</a>
+                <a href="register.html" class="nav-link">Register Garage</a>
                 <a href="index.html#about" class="nav-link">About Us</a>
                 <a href="index.html#contact" class="nav-link">Contact</a>
                 
@@ -50,11 +53,10 @@
     <!-- Main News Content -->
     <main class="news-main">
         
-        <!-- News Hero Banner (Full Desktop Cover with Dark Overlay) -->
+        <!-- News Hero Banner -->
         <section class="news-hero">
             <div class="news-hero-overlay"></div>
             
-            <!-- Breadcrumbs placed inside Hero to float over the image -->
             <div class="breadcrumbs-container">
                 <a href="index.html">Home</a> / <span style="color: #cbd5e1;">News</span>
             </div>
@@ -65,12 +67,12 @@
             </div>
         </section>
 
-        <!-- News Grid Section Wrapped in Dark Blue Background -->
+        <!-- News Grid Section -->
         <div class="news-section-wrapper">
             <section class="news-section">
                 <div class="news-grid" id="newsGrid">
                     
-                    <!-- Visible Cards (6) -->
+                    <!-- Visible Cards -->
                     <div class="news-card" onclick="window.location.href='newsin.html';" style="cursor: pointer;">
                         <div class="news-image-wrapper">
                             <span class="news-date">March 13, 2026</span>
@@ -137,7 +139,7 @@
                         </div>
                     </div>
 
-                    <!-- Hidden Cards (Learn More ebuwama pena ewa) -->
+                    <!-- Hidden Cards -->
                     <div class="news-card hidden-card" onclick="window.location.href='newsin.html';" style="cursor: pointer;">
                         <div class="news-image-wrapper">
                             <span class="news-date">April 05, 2026</span>

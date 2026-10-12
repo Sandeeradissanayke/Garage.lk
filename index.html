@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,16 +17,17 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 </head>
-
 <body>
 
     <!-- Header Section -->
     <header class="header-container">
         <div class="header">
-            <div class="logo-container">
-                <a href="#home" class="logo-link">
-                    <h1 class="logo">GARAGE<span class="lk">.lk</span></h1>
-                </a>
+            <div class="header-left-group">
+                <div class="logo-container">
+                    <a href="index.html" class="logo-link">
+                        <h1 class="logo">GARAGE<span class="lk">.lk</span></h1>
+                    </a>
+                </div>
             </div>
 
             <!-- Mobile Menu Toggle Icon -->
@@ -40,11 +40,11 @@
                 <a href="#services" class="nav-link">Services</a>
                 <a href="#services" class="nav-link">Find Garages</a>
                 <a href="news.html" class="nav-link">News</a>
-                <a href="#" class="nav-link" id="registerLink">Register Garage</a>
+                <a href="register.html" class="nav-link">Register Garage</a>
                 <a href="#about" class="nav-link">About Us</a>
                 <a href="#contact" class="nav-link">Contact</a>
 
-                <!-- Theme Toggle Switch (Moved inside nav for mobile view) -->
+                <!-- Theme Toggle Switch -->
                 <div class="theme-switch-wrapper" id="themeToggleBtn">
                     <div class="theme-switch">
                         <i class="fa-solid fa-sun icon-sun"></i>
@@ -58,7 +58,6 @@
 
     <!-- Hero Section -->
     <section class="hero" id="home">
-
         <div class="slideshow">
             <div class="slide" style="background-image: url('Tyer.jpg');"></div>
             <div class="slide" style="background-image: url('Tyer.jpg');"></div>
@@ -72,10 +71,8 @@
         </div>
 
         <div class="hero-content">
-            <h2 class="hero-title">Vehicle broke down?<br><span class="highlight">Find a garage near you in
-                    seconds.</span></h2>
-            <p class="hero-desc">Share where you are, pick the problem, and see the closest garages that can fix it,
-                with their phone numbers, hours and directions.</p>
+            <h2 class="hero-title">Vehicle broke down?<br><span class="highlight">Find a garage near you in seconds.</span></h2>
+            <p class="hero-desc">Share where you are, pick the problem, and see the closest garages that can fix it, with their phone numbers, hours and directions.</p>
             <button class="login-btn" id="loginBtn">LOGIN</button>
         </div>
 
@@ -177,12 +174,9 @@
                 <p><i class="fa-solid fa-phone"></i> +94 77 240 0594</p>
                 <p><i class="fa-solid fa-envelope"></i> support@garage.lk</p>
                 <div class="social-icons">
-                    <a href="https://wa.me/94772400594" target="_blank" class="social-icon whatsapp"><i
-                            class="fa-brands fa-whatsapp"></i></a>
-                    <a href="https://web.facebook.com/profile.php?id=61595258724424" target="_blank"
-                        class="social-icon facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="https://instagram.com" target="_blank" class="social-icon instagram"><i
-                            class="fa-brands fa-instagram"></i></a>
+                    <a href="https://wa.me/94772400594" target="_blank" class="social-icon whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
+                    <a href="https://web.facebook.com/profile.php?id=61595258724424" target="_blank" class="social-icon facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://instagram.com" target="_blank" class="social-icon instagram"><i class="fa-brands fa-instagram"></i></a>
                     <a href="tel:+94772400594" class="social-icon phone"><i class="fa-solid fa-phone"></i></a>
                 </div>
             </div>
@@ -192,7 +186,7 @@
         </div>
     </footer>
 
-    <!-- 1. Login / Sign Up Popup Modal -->
+    <!-- Login / Sign Up Popup Modal -->
     <div class="auth-modal" id="authModal">
         <div class="modal-content">
             <span class="close-btn" id="closeModal">&times;</span>
@@ -231,74 +225,20 @@
         </div>
     </div>
 
-    <!-- 2. Garage Registration Popup Modal -->
-    <div class="auth-modal" id="registerModal">
-        <div class="modal-content" style="max-width: 500px;">
-            <span class="close-btn" id="closeRegisterModal">&times;</span>
-            <form class="auth-form" id="registerGarageForm">
-                <h3>Register Your Garage</h3>
-                <div class="input-group">
-                    <label>Garage Name</label>
-                    <input type="text" placeholder="Enter garage name" required>
-                </div>
-                <div class="input-group">
-                    <label>Phone Number</label>
-                    <input type="tel" placeholder="Enter contact number" required>
-                </div>
-
-                <!-- Registration Services Buttons -->
-                <div class="input-group">
-                    <label>Select Services Offered</label>
-                    <div class="reg-service-options">
-                        <button type="button" class="reg-srv-btn" data-value="tyre">Tyre</button>
-                        <button type="button" class="reg-srv-btn" data-value="towing">Towing</button>
-                        <button type="button" class="reg-srv-btn" data-value="battery">Battery</button>
-                        <button type="button" class="reg-srv-btn" data-value="engine">Engine</button>
-                        <button type="button" class="reg-srv-btn" data-value="oil">Oil</button>
-                        <button type="button" class="reg-srv-btn" data-value="fuel">Fuel</button>
-                        <button type="button" class="reg-srv-btn" data-value="ac">A/C</button>
-                        <button type="button" class="reg-srv-btn" data-value="other">Other</button>
-                    </div>
-                </div>
-
-                <!-- Registration Map -->
-                <div class="input-group">
-                    <label>Pin Your Location on Map</label>
-                    <div id="registerMap"
-                        style="height: 200px; width: 100%; border-radius: 8px; margin-bottom: 10px; z-index: 1;"></div>
-                    <input type="text" id="locationCoordinates" placeholder="Click map to pin location" readonly
-                        required>
-                </div>
-
-                <div class="input-group">
-                    <label>Password</label>
-                    <input type="password" id="garagePassword" placeholder="Min 6 characters" required>
-                </div>
-                <div class="input-group">
-                    <label>Confirm Password</label>
-                    <input type="password" id="garageConfirmPassword" placeholder="Re-enter your password" required>
-                </div>
-                <button type="submit" class="submit-btn">SUBMIT REGISTRATION</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- 3. Nearby Garages Map Modal -->
+    <!-- Nearby Garages Map Modal -->
     <div class="auth-modal" id="garagesMapModal">
         <div class="modal-content" style="max-width: 800px;">
             <span class="close-btn" id="closeGaragesMapModal">&times;</span>
             <h3 style="text-align: center; margin-bottom: 10px;">Available Garages Near You</h3>
-            <p style="text-align: center; font-size: 13px; color: #cbd5e1;">Click on a red pin to request a service or
-                view the location.</p>
-            <div id="resultsMap" style="height: 450px; width: 100%; border-radius: 8px; margin-top: 15px; z-index: 1;">
-            </div>
+            <p style="text-align: center; font-size: 13px; color: #cbd5e1;">Click on a red pin to request a service or view the location.</p>
+            <div id="resultsMap" style="height: 450px; width: 100%; border-radius: 8px; margin-top: 15px; z-index: 1;"></div>
         </div>
     </div>
+    
     <!-- Firebase DataBase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore-compat.js"></script>
 
     <script src="script.js"></script>
 </body>
-
 </html>

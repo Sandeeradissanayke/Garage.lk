@@ -99,7 +99,7 @@ body.light-mode .news-detail-content {
     color: #1e293b;
 }
 
-/* --- New Added Styles For Extra Content --- */
+/* Extra Content Styles */
 .extra-content {
     margin-top: 20px;
     color: #cfd6ed;
@@ -125,7 +125,6 @@ body.light-mode .extra-content {
         transform: translateY(0);
     }
 }
-/* ------------------------------------------- */
 
 .learn-more-container {
     text-align: center;
