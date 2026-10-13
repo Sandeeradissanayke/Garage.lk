@@ -1,4 +1,39 @@
 // ==========================================
+// PUSH NOTIFICATIONS & SERVICE WORKER
+// ==========================================
+if ('Notification' in window && 'serviceWorker' in navigator) {
+    // 1. Notification සඳහා අවසර ඉල්ලීම
+    Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+            console.log("Notifications සඳහා අවසර ලැබුණා!");
+
+            // 2. Service Worker එක ලියාපදිංචි කිරීම
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log("Service Worker සාර්ථකයි!", reg))
+                .catch(err => console.error("Service Worker දෝෂයක්:", err));
+        } else {
+            console.log("Notifications සඳහා අවසර ලබා දුන්නේ නැත.");
+        }
+    });
+}
+
+// ටෙස්ට් කිරීම සඳහා Notification එකක් යවන Function එක
+window.sendTestNotification = function () {
+    if (Notification.permission === 'granted') {
+        navigator.serviceWorker.ready.then(reg => {
+            reg.showNotification('Garage.lk 🔴', {
+                body: 'අලුත් ඉල්ලීමක්! පාරිභෝගිකයෙකුට කාර්මිකයෙකු අවශ්‍ය වී ඇත.',
+                icon: 'https://cdn-icons-png.flaticon.com/512/198/198111.png', // කුඩා අයිකනයක්
+                vibrate: [200, 100, 200, 100, 200], // ෆෝන් එක වයිබ්‍රේට් වෙන රටාව
+            });
+        });
+    } else {
+        alert("කරුණාකර Notifications සඳහා Allow කරන්න.");
+    }
+};
+
+
+// ==========================================
 // 0. FIREBASE DATABASE CONNECTION
 // ==========================================
 const firebaseConfig = {
@@ -148,7 +183,7 @@ if (registerGarageForm) {
                 document.getElementById('locationCoordinates').value = '';
             }
             submitBtn.innerHTML = "SUBMIT REGISTRATION";
-            window.location.href = "index.html"; 
+            window.location.href = "index.html";
         }).catch((error) => {
             console.error("Error adding document: ", error);
             alert("දත්ත ඇතුළත් කිරීමේදී දෝෂයක් මතු විය. කරුණාකර Firebase Firestore Security Rules පරීක්ෂා කරන්න.");
@@ -324,7 +359,7 @@ window.sendMechanicRequest = function (garagePhone, garageName, btnElement) {
     btnElement.disabled = true;
 
     const requestData = {
-        garagePhone: garagePhone, 
+        garagePhone: garagePhone,
         garageName: garageName,
         customerLat: userCoords ? userCoords[0] : null,
         customerLng: userCoords ? userCoords[1] : null,
@@ -336,7 +371,7 @@ window.sendMechanicRequest = function (garagePhone, garageName, btnElement) {
         .then(() => {
             alert(garageName + " වෙත ඔබගේ ඉල්ලීම සාර්ථකව යවන ලදී! ඔවුන් ඉක්මනින් ඔබව සම්බන්ධ කරගනු ඇත.");
             btnElement.innerHTML = "REQUEST SENT";
-            btnElement.style.background = "#25d366"; 
+            btnElement.style.background = "#25d366";
         })
         .catch((error) => {
             console.error("Error sending request: ", error);
