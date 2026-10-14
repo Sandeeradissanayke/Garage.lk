@@ -354,6 +354,15 @@ if (garagesMapModal) garagesMapModal.addEventListener('click', (e) => { if (e.ta
 // 6. SEND MECHANIC REQUEST TO FIREBASE
 // ==========================================
 window.sendMechanicRequest = function (garagePhone, garageName, btnElement) {
+    // 1. පාරිභෝගිකයාගෙන් දුරකථන අංකය ඉල්ලීම
+    let customerPhone = prompt("කරුණාකර ඔබගේ දුරකථන අංකය ඇතුළත් කරන්න:");
+
+    // අංකය ඇතුළත් නොකර Cancel කළහොත් ඉල්ලීම යවන්නේ නැත
+    if (customerPhone == null || customerPhone.trim() === "") {
+        alert("ඉල්ලීම යැවීමට ඔබගේ දුරකථන අංකය අත්‍යවශ්‍ය වේ!");
+        return;
+    }
+
     const originalText = btnElement.innerHTML;
     btnElement.innerHTML = "SENDING...";
     btnElement.disabled = true;
@@ -361,6 +370,7 @@ window.sendMechanicRequest = function (garagePhone, garageName, btnElement) {
     const requestData = {
         garagePhone: garagePhone,
         garageName: garageName,
+        customerPhone: customerPhone, // අලුතින් එකතු කළ පේළිය
         customerLat: userCoords ? userCoords[0] : null,
         customerLng: userCoords ? userCoords[1] : null,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
@@ -369,7 +379,7 @@ window.sendMechanicRequest = function (garagePhone, garageName, btnElement) {
 
     db.collection("requests").add(requestData)
         .then(() => {
-            alert(garageName + " වෙත ඔබගේ ඉල්ලීම සාර්ථකව යවන ලදී! ඔවුන් ඉක්මනින් ඔබව සම්බන්ධ කරගනු ඇත.");
+            alert(garageName + " වෙත ඔබගේ ඉල්ලීම සාර්ථකව යවන ලදී!");
             btnElement.innerHTML = "REQUEST SENT";
             btnElement.style.background = "#25d366";
         })

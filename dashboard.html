@@ -5,68 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Garage Owner Dashboard</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #0f172a;
-            color: white;
-            padding: 20px;
-        }
-
-        .header {
-            background: #1e293b;
-            padding: 15px 20px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        }
-
-        .requests-container {
-            margin-top: 20px;
-        }
-
-        .request-card {
-            background: #1e293b;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border-left: 5px solid #e74c3c;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn-accept {
-            background: #06b6d4;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        .btn-accept:hover {
-            background: #0891b2;
-        }
-
-        .logout-btn {
-            background: #ef4444;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-left: 15px;
-        }
-
-        .logout-btn:hover {
-            background: #dc2626;
-        }
-    </style>
+    <!-- CSS ෆයිල් එක සම්බන්ධ කිරීම -->
+    <link rel="stylesheet" href="dashboard.css">
 </head>
 
 <body>
@@ -74,14 +14,23 @@
     <div class="header">
         <h2>⚙️ Garage.lk - Dashboard</h2>
         <div>
-            <span id="status" style="color: #facc15;">පරීක්ෂා කරමින් පවතී...</span>
+            <span id="status" class="status-checking">පරීක්ෂා කරමින් පවතී...</span>
             <button class="logout-btn" onclick="logout()" id="logoutBtn" style="display:none;">Logout (ඉවත්
                 වන්න)</button>
         </div>
     </div>
 
+    <!-- අලුත් ඉල්ලීම් පෙන්වන කොටස -->
     <div class="requests-container" id="requestsList">
         <h3>නව ඉල්ලීම් බලාපොරොත්තුවෙන්...</h3>
+    </div>
+
+    <hr class="divider">
+
+    <!-- භාරගත් ඉල්ලීම් පෙන්වන කොටස -->
+    <div class="requests-container" id="acceptedRequestsList">
+        <h3>✅ භාරගත් ඉල්ලීම් (Accepted)</h3>
+        <p class="empty-msg">දැනට භාරගත් ඉල්ලීම් නොමැත.</p>
     </div>
 
     <!-- Firebase SDKs -->
@@ -89,104 +38,8 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
-    <script>
-        // 1. ඔබගේ Firebase Config මෙතනට දාන්න
-        const firebaseConfig = {
-            apiKey: "AIzaSyCDqryDjXE4mipP-sAxhEsX_j9-mr2gli0",
-            authDomain: "garage-lk-c27a9.firebaseapp.com",
-            projectId: "garage-lk-c27a9",
-            storageBucket: "ඔබගේ_STORAGE_BUCKET",
-            messagingSenderId: "ඔබගේ_MESSAGING_SENDER_ID",
-            appId: "ඔබගේ_APP_ID"
-        };
-
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        const db = firebase.firestore();
-        const auth = firebase.auth();
-
-        // 2. ලොග් වී ඇති පරිශීලකයා පරීක්ෂා කිරීම (Authentication Check)
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                // පරිශීලකයා ලොග් වී ඇත!
-                document.getElementById('status').innerHTML = `🟢 Online (${user.email})`;
-                document.getElementById('status').style.color = "#2ecc71";
-                document.getElementById('logoutBtn').style.display = "inline-block";
-
-                // 3. Database එකෙන් ඊමේල් එකට අදාළ ගරාජයේ අංකය සෙවීම
-                db.collection("garages").where("email", "==", user.email).get()
-                    .then((querySnapshot) => {
-                        if (!querySnapshot.empty) {
-                            const myGaragePhone = querySnapshot.docs[0].data().phone;
-                            loadRequests(myGaragePhone); // එම අංකයට අදාළ ඉල්ලීම් ලබා ගැනීම
-                        } else {
-                            document.getElementById('requestsList').innerHTML = "<h3>⚠️ ඔබගේ ගිණුමට අදාළ ගරාජයක් දත්ත ගබඩාවේ හමු නොවීය! (Database එකේ email එක ඇතුළත් කර ඇත්දැයි බලන්න)</h3>";
-                        }
-                    })
-                    .catch((error) => console.error("Error: ", error));
-            } else {
-                // ලොග් වී නැත්නම් login පිටුවට හරවා යවයි
-                window.location.href = "login.html";
-            }
-        });
-
-        // 4. Real-time Requests ලබා ගැනීමේ ෆන්ක්ෂන් එක
-        function loadRequests(garagePhone) {
-            db.collection("requests")
-                .where("garagePhone", "==", garagePhone)
-                .where("status", "==", "pending")
-                .onSnapshot((snapshot) => {
-                    const requestsList = document.getElementById('requestsList');
-
-                    if (!snapshot.empty) {
-                        requestsList.innerHTML = "<h3>🚨 ඔබට නව ඉල්ලීම් ඇත!</h3>";
-                    } else {
-                        requestsList.innerHTML = "<h3>නව ඉල්ලීම් බලාපොරොත්තුවෙන්...</h3>";
-                    }
-
-                    snapshot.docChanges().forEach((change) => {
-                        if (change.type === "added") {
-                            triggerNotification();
-                        }
-                    });
-
-                    snapshot.forEach((doc) => {
-                        const req = doc.data();
-                        const card = `
-                        <div class="request-card" id="${doc.id}">
-                            <h4>🔧 කාර්මිකයෙකු අවශ්‍ය වී ඇත!</h4>
-                            <p><strong>දිනය/වේලාව:</strong> ${req.timestamp ? req.timestamp.toDate().toLocaleString() : 'දැන්'}</p>
-                            <p><strong>පාරිභෝගික ස්ථානය:</strong> Lat: ${req.customerLat}, Lng: ${req.customerLng}</p>
-                            <button class="btn-accept" onclick="acceptRequest('${doc.id}')">Accept Request (භාරගන්න)</button>
-                        </div>
-                      `;
-                        requestsList.innerHTML += card;
-                    });
-                });
-        }
-
-        // Notification යැවීම
-        function triggerNotification() {
-            if (Notification.permission === 'granted') {
-                new Notification("Garage.lk 🚨", {
-                    body: "ඔබට අලුත් හයර් එකක් ලැබී ඇත! වහාම Dashboard එක බලන්න."
-                });
-            }
-        }
-
-        // ඉල්ලීම භාර ගැනීම
-        function acceptRequest(id) {
-            alert("ඔබ ඉල්ලීම භාරගත්තා! (මෙය දත්ත ගබඩාවේ යාවත්කාලීන කිරීම පසුව සිදු කරමු)");
-        }
-
-        // ලොග් අවුට් වීම
-        function logout() {
-            auth.signOut().then(() => {
-                window.location.href = "login.html"; // ඉවත් වූ පසු login එකට යයි
-            });
-        }
-    </script>
+    <!-- JavaScript ෆයිල් එක සම්බන්ධ කිරීම -->
+    <script src="dashboard.js"></script>
 </body>
 
 </html>
