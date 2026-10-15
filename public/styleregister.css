@@ -1,0 +1,139 @@
+/* ==========================================
+   REGISTER PAGE HERO & FORM STYLES
+   ========================================== */
+
+/* Hero Banner with Background Image */
+.register-hero {
+    position: relative;
+    width: 100%;
+    min-height: 480px;
+    height: 60vh;
+    background-image: url('Otherservices.jpg'); /* Oyage thiyena image ekak yodanna */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 0 60px 0;
+}
+
+/* Dark Gradient Overlay */
+.register-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(7, 13, 27, 0.95) 0%, rgba(7, 13, 27, 0.55) 100%);
+    z-index: 1;
+}
+
+/* Breadcrumbs positioned over Hero */
+.register-hero .breadcrumbs-container {
+    position: absolute;
+    top: 100px;
+    left: 40px;
+    width: 100%;
+    z-index: 5;
+    color: #cbd5e1;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.register-hero .breadcrumbs-container a {
+    color: #cbd5e1;
+    text-decoration: underline;
+}
+
+.register-hero .breadcrumbs-container a:hover {
+    color: #ffcc00;
+}
+
+/* Hero Content Typography */
+.register-hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+.register-hero-content h1 {
+    color: #ffcc00;
+    font-size: 52px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+}
+
+.register-hero-content p {
+    color: #cfd6ed;
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.6;
+    max-width: 680px;
+}
+
+/* Section Wrapper for the Form */
+.register-section-wrapper {
+    background-color: #0b1736;
+    width: 100%;
+    padding: 60px 20px 90px 20px;
+    display: flex;
+    justify-content: center;
+}
+
+body.light-mode .register-section-wrapper {
+    background-color: #f1f5f9;
+}
+
+/* Form Container Card */
+.register-card-container {
+    width: 100%;
+    max-width: 650px;
+    background: linear-gradient(135deg, rgba(14, 28, 77, 0.95), rgba(8, 17, 46, 0.98));
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px solid rgba(41, 74, 184, 0.5);
+    color: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+body.light-mode .register-card-container {
+    background: #ffffff;
+    color: #0f172a;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.form-title {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: #ffffff;
+}
+
+body.light-mode .form-title {
+    color: #0f172a;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .register-hero-content h1 {
+        font-size: 36px;
+    }
+
+    .register-hero .breadcrumbs-container {
+        left: 20px;
+    }
+
+    .register-hero-content {
+        padding: 0 20px;
+    }
+
+    .register-card-container {
+        padding: 25px 20px;
+    }
+}

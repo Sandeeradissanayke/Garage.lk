@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garage Owner Login - GARAGE.lk</title>
+    <!-- CSS ෆයිල් එක සම්බන්ධ කිරීම -->
+    <link rel="stylesheet" href="login.css">
+</head>
+
+<body>
+
+    <div class="login-container">
+        <h2 class="logo-title">GARAGE<span class="lk">.lk</span></h2>
+        <h3>Owner Login (ගරාජ් හිමිකරු)</h3>
+
+        <form id="loginForm">
+            <div class="input-group">
+                <label>Email Address (ඊමේල් ලිපිනය)</label>
+                <input type="email" id="email" placeholder="garage@example.com" required>
+            </div>
+            <div class="input-group">
+                <label>Password (මුරපදය)</label>
+                <input type="password" id="password" placeholder="********" required>
+            </div>
+
+            <p id="errorMessage" class="error-msg"></p>
+
+            <button type="submit" id="loginBtn" class="submit-btn">Login to Dashboard</button>
+        </form>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-auth-compat.js"></script>
+
+    <!-- JavaScript ෆයිල් එක සම්බන්ධ කිරීම -->
+    <script src="login.js"></script>
+</body>
+
+</html>

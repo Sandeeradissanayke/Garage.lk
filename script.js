@@ -426,3 +426,32 @@ window.sendMechanicRequest = function (garagePhone, garageName, btnElement) {
             });
     }
 };
+
+// ==========================================
+// MOBILE MENU TOGGLE LOGIC
+// ==========================================
+const mobileMenuBtn = document.getElementById('mobile-menu');
+const navMenu = document.getElementById('nav-menu');
+
+if (mobileMenuBtn && navMenu) {
+    mobileMenuBtn.addEventListener('click', () => {
+        // 'active' කියන class එක දැම්මම CSS වල තියෙන විදිහට මෙනුව එළියට එනවා
+        navMenu.classList.toggle('active');
+
+        // අයිකන් එක 'හතරැස්' (bars) එකෙන් 'කතිරය' (times) එකට මාරු කිරීම
+        if (navMenu.classList.contains('active')) {
+            mobileMenuBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+        } else {
+            mobileMenuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+        }
+    });
+
+    // මෙනු එකේ ලින්ක් එකක් එබුවම මෙනුව ඔටෝම වැහෙන විදිහට හැදීම
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            navMenu.classList.remove('active');
+            mobileMenuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+        });
+    });
+}

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GARAGE.lk</title>
+
+    <!-- Local CSS and Icons -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="fontawesome/css/all.min.css">
+
+    <!-- Leaflet Map CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Leaflet Search (Geocoder) CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+</head>
+
+<body>
+    <!-- Header Section -->
+    <header class="header-container">
+        <div class="header">
+            <div class="header-left-group">
+                <div class="logo-container">
+                    <a href="index.html" class="logo-link">
+                        <h1 class="logo">GARAGE<span class="lk">.lk</span></h1>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Mobile Menu Toggle Icon -->
+            <div class="menu-toggle" id="mobile-menu">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+
+            <!-- Navigation Menu -->
+
+            <nav class="nav-menu" id="nav-menu">
+                <a href="#services" class="nav-link">Services</a>
+                <a href="#services" class="nav-link">Find Garages</a>
+                <a href="news.html" class="nav-link">News</a>
+                <a href="register.html" class="nav-link">Register Garage</a>
+
+                <!-- ගරාජ් හිමිකරුට ලොග් වෙන්න අලුත් ලින්ක් එක -->
+                <a href="login.html" class="nav-link" style=" font-weight: bold;"><i class="fa-solid fa-user-gear"></i>
+                    Owner Login</a>
+
+                <a href="#about" class="nav-link">About Us</a>
+                <a href="#contact" class="nav-link">Contact</a>
+                <!-- Theme Toggle Switch -->
+                <div class="theme-switch-wrapper" id="themeToggleBtn">
+                    <div class="theme-switch">
+                        <i class="fa-solid fa-sun icon-sun"></i>
+                        <i class="fa-solid fa-moon icon-moon"></i>
+                        <div class="slider-thumb"></div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="slideshow">
+            <div class="slide" style="background-image: url('Tyer.jpg');"></div>
+            <div class="slide" style="background-image: url('Tyer.jpg');"></div>
+            <div class="slide" style="background-image: url('Towing.webp');"></div>
+            <div class="slide" style="background-image: url('Battery.webp');"></div>
+            <div class="slide" style="background-image: url('Engine.jpg');"></div>
+            <div class="slide" style="background-image: url('OilService.avif');"></div>
+            <div class="slide" style="background-image: url('FuelDelivery.jpg');"></div>
+            <div class="slide" style="background-image: url('ACservise.avif');"></div>
+            <div class="slide" style="background-image: url('Otherservices.jpg');"></div>
+        </div>
+
+        <div class="hero-content">
+            <h2 class="hero-title">Vehicle broke down?<br><span class="highlight">Find a garage near you in
+                    seconds.</span></h2>
+            <p class="hero-desc">Share where you are, pick the problem, and see the closest garages that can fix it,
+                with their phone numbers, hours and directions.</p>
+            <button class="login-btn" id="loginBtn">LOGIN</button>
+        </div>
+
+        <div class="scroll-indicator">
+            <span>Explore Services</span>
+            <i class="fa-solid fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- Services & Location Search Section -->
+    <section class="services-section" id="services">
+        <div class="card-container">
+            <h3 class="section-title">SELECT REQUIRED SERVICES (Multiple)</h3>
+
+            <div class="services-grid">
+                <div class="service-card" onclick="toggleService(this)">
+                    <input type="checkbox" name="service" value="tyre">
+                    <img src="Tyer.jpg" alt="Tyre repair">
+                    <div class="service-tag">Tyre repair</div>
+                    <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <div class="service-card" onclick="toggleService(this)">
+                    <input type="checkbox" name="service" value="towing">
+                    <img src="Towing.webp" alt="Towing">
+                    <div class="service-tag">Towing</div>
+                    <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <div class="service-card" onclick="toggleService(this)">
+                    <input type="checkbox" name="service" value="battery">
+                    <img src="Battery.webp" alt="Battery">
+                    <div class="service-tag">Battery</div>
+                    <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <div class="service-card" onclick="toggleService(this)">
+                    <input type="checkbox" name="service" value="engine">
+                    <img src="Engine.jpg" alt="Engine">
+                    <div class="service-tag">Engine</div>
+                    <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <div class="service-card" onclick="toggleService(this)">
+                    <input type="checkbox" name="service" value="oil">
+                    <img src="OilService.avif" alt="OilService">
+                    <div class="service-tag">Oil service</div>
+                    <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <div class="service-card" onclick="toggleService(this)">
+                    <input type="checkbox" name="service" value="fuel">
+                    <img src="FuelDelivery.jpg" alt="FuelDelivery">
+                    <div class="service-tag">Fuel delivery</div>
+                    <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <div class="service-card" onclick="toggleService(this)">
+                    <input type="checkbox" name="service" value="ac">
+                    <img src="ACservise.avif" alt="ACservise">
+                    <div class="service-tag">A/C service</div>
+                    <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <div class="service-card" onclick="toggleService(this)">
+                    <input type="checkbox" name="service" value="other">
+                    <img src="Otherservices.jpg" alt="Otherservices">
+                    <div class="service-tag">Other services</div>
+                    <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+                </div>
+            </div>
+
+            <!-- Location Search Input -->
+            <p class="location-prompt">Enter your location or let your phone find it for you.</p>
+            <div class="location-actions">
+                <div class="search-input-wrapper">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <input type="text" id="searchAreaInput" placeholder="Enter town or area (e.g., Colombo)">
+                </div>
+                <button class="loc-btn" id="useCurrentLocBtn" type="button">
+                    <i class="fa-solid fa-location-crosshairs"></i> Use current location
+                </button>
+            </div>
+
+            <button class="find-garages-btn" id="findGaragesBtn">FIND NEARBY GARAGES</button>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="footer-container" id="about">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h2>GARAGE<span class="lk">.lk</span></h2>
+                <p>Find the best nearby garages and vehicle services in seconds.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#services">Find Garages</a></li>
+                    <li><a href="news.html">News</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact" id="contact">
+                <h4>Contact Us</h4>
+                <p><i class="fa-solid fa-phone"></i> +94 77 240 0594</p>
+                <p><i class="fa-solid fa-envelope"></i> support@garage.lk</p>
+                <div class="social-icons">
+                    <a href="https://wa.me/94772400594" target="_blank" class="social-icon whatsapp"><i
+                            class="fa-brands fa-whatsapp"></i></a>
+                    <a href="https://web.facebook.com/profile.php?id=61595258724424" target="_blank"
+                        class="social-icon facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://instagram.com" target="_blank" class="social-icon instagram"><i
+                            class="fa-brands fa-instagram"></i></a>
+                    <a href="tel:+94772400594" class="social-icon phone"><i class="fa-solid fa-phone"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 GARAGE.lk. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Login / Sign Up Popup Modal -->
+    <div class="auth-modal" id="authModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <div class="auth-tabs">
+                <button class="tab-btn active" id="signInTabBtn">Sign In</button>
+                <button class="tab-btn" id="signUpTabBtn">Sign Up</button>
+            </div>
+            <form class="auth-form" id="signInForm">
+                <h3>Welcome Back</h3>
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="Enter your email" required>
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="submit-btn">SIGN IN</button>
+            </form>
+            <form class="auth-form" id="signUpForm" style="display: none;">
+                <h3>Create an Account</h3>
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" placeholder="Enter full name" required>
+                </div>
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="Enter your email" required>
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="Create a password" required>
+                </div>
+                <button type="submit" class="submit-btn">SIGN UP</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Nearby Garages Map Modal -->
+    <div class="auth-modal" id="garagesMapModal">
+        <div class="modal-content" style="max-width: 800px;">
+            <span class="close-btn" id="closeGaragesMapModal">&times;</span>
+            <h3 style="text-align: center; margin-bottom: 10px;">Available Garages Near You</h3>
+            <p style="text-align: center; font-size: 13px; color: #cbd5e1;">Click on a red pin to request a service or
+                view the location.</p>
+            <div id="resultsMap" style="height: 450px; width: 100%; border-radius: 8px; margin-top: 15px; z-index: 1;">
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase DataBase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore-compat.js"></script>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
