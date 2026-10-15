@@ -106,7 +106,9 @@ function loadRequests(garagePhone) {
                     <p><strong>දිනය/වේලාව:</strong> ${req.timestamp ? req.timestamp.toDate().toLocaleString() : 'දැන්'}</p>
                     <p><strong>📞 පාරිභෝගික අංකය:</strong> <a href="tel:${phone}" style="color: white;">${phone}</a></p>
                     <p><strong>📍 ස්ථානය:</strong> ${locationHTML}</p>
-                    <button class="btn-accept" style="background: #2ecc71; cursor: default;" disabled>භාරගෙන ඇත</button>
+                    
+                    <!-- මෙන්න මේ අලුත් බොත්තම තමයි මාරු වෙන්න ඕනේ -->
+                    <button class="btn-complete" onclick="completeRequest('${doc.id}')">Mark as Completed (වැඩේ අවසන්)</button>
                 </div>
               `;
                 acceptedList.innerHTML += card;
@@ -135,6 +137,23 @@ function acceptRequest(id) {
             console.error("Error updating status: ", error);
             alert("දෝෂයක් මතු විය! කරුණාකර නැවත උත්සාහ කරන්න.");
         });
+}
+
+// ඉල්ලීමක් සම්පූර්ණයෙන්ම අවසන් කිරීම (Completed)
+window.completeRequest = function (id) {
+    // වැරදීමකින් බොත්තම එබුණොත් අහන්න Confirm එකක් දාමු
+    if (confirm("මෙම වැඩය සම්පූර්ණයෙන්ම අවසන් කළ බව තහවුරු කරනවාද?")) {
+        db.collection("requests").doc(id).update({
+            status: "completed"
+        })
+            .then(() => {
+                alert("වැඩය අවසන් කළ බව සාර්ථකව සටහන් විය!");
+            })
+            .catch((error) => {
+                console.error("Error updating status: ", error);
+                alert("දෝෂයක් මතු විය! කරුණාකර නැවත උත්සාහ කරන්න.");
+            });
+    }
 }
 
 // ලොග් අවුට් වීම
