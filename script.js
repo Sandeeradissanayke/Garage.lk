@@ -357,7 +357,6 @@ window.sendMechanicRequest = function (garagePhone, garageName, btnElement) {
     // 1. පාරිභෝගිකයාගෙන් දුරකථන අංකය ඉල්ලීම
     let customerPhone = prompt("කරුණාකර ඔබගේ දුරකථන අංකය ඇතුළත් කරන්න:");
 
-    // අංකය ඇතුළත් නොකර Cancel කළහොත් ඉල්ලීම යවන්නේ නැත
     if (customerPhone == null || customerPhone.trim() === "") {
         alert("ඉල්ලීම යැවීමට ඔබගේ දුරකථන අංකය අත්‍යවශ්‍ය වේ!");
         return;
@@ -367,26 +366,63 @@ window.sendMechanicRequest = function (garagePhone, garageName, btnElement) {
     btnElement.innerHTML = "SENDING...";
     btnElement.disabled = true;
 
-    const requestData = {
-        garagePhone: garagePhone,
-        garageName: garageName,
-        customerPhone: customerPhone, // අලුතින් එකතු කළ පේළිය
-        customerLat: userCoords ? userCoords[0] : null,
-        customerLng: userCoords ? userCoords[1] : null,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        status: "pending"
-    };
+    // 2. ලොකේෂන් එක ලබා ගැනීම
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                // ලොකේෂන් එක ලැබුණොත්
+                sendDataToFirebase(position.coords.latitude, position.coords.longitude);
+            },
+            function (error) {
+                // ලොකේෂන් එක දුන්නේ නැත්නම් හෝ දෝෂයක් ආවොත්
+                alert("අවවාදයයි: ඔබගේ ස්ථානය ලබා ගැනීමට නොහැකි විය. ගරාජය ඔබව දුරකථනයෙන් සම්බන්ධ කර ගනු ඇත.");
+                sendDataToFirebase(null, null); // ලොකේෂන් නැතුව යවනවා
+            },
+            { enableHighAccuracy: true } // වඩාත් නිවැරදි ස්ථානය ගන්න
+        );
+    } else {
+        alert("ඔබගේ බ්‍රවුසරය ස්ථානය ලබා දීමට සහය නොදක්වයි.");
+        sendDataToFirebase(null, null);
+    }
 
-    db.collection("requests").add(requestData)
-        .then(() => {
-            alert(garageName + " වෙත ඔබගේ ඉල්ලීම සාර්ථකව යවන ලදී!");
-            btnElement.innerHTML = "REQUEST SENT";
-            btnElement.style.background = "#25d366";
-        })
-        .catch((error) => {
-            console.error("Error sending request: ", error);
-            alert("ඉල්ලීම යැවීමේදී දෝෂයක් මතු විය.");
-            btnElement.innerHTML = originalText;
-            btnElement.disabled = false;
-        });
+    // 3. Firebase එකට දත්ත යවන කොටස
+    function sendDataToFirebase(lat, lng) {
+        const requestData = {
+            garagePhone: garagePhone,
+            garageName: garageName,
+            customerPhone: customerPhone,
+            customerLat: lat,
+            customerLng: lng,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            status: "pending"
+        };
+
+        db.collection("requests").add(requestData)
+            .then((docRef) => {
+                alert(garageName + " වෙත ඔබගේ ඉල්ලීම සාර්ථකව යවන ලදී! කරුණාකර රැඳී සිටින්න...");
+                btnElement.innerHTML = "WAITING...";
+                btnElement.style.background = "#f39c12";
+
+                // අලුත් කොටස: ගරාජයෙන් ඉල්ලීම Accept කරන තුරු Real-time බලා සිටීම
+                const unsubscribe = db.collection("requests").doc(docRef.id)
+                    .onSnapshot((doc) => {
+                        const data = doc.data();
+                        if (data && data.status === "accepted") {
+                            // ගරාජය ඉල්ලීම භාරගත් පසු පාරිභෝගිකයාට දැනුම් දීම
+                            alert("✅ සුබ ආරංචියක්! " + garageName + " විසින් ඔබගේ ඉල්ලීම භාරගෙන ඇත. ඔවුන් ඉක්මනින් ඔබව දුරකථනයෙන් අමතනු ඇත.");
+                            btnElement.innerHTML = "ACCEPTED ✓";
+                            btnElement.style.background = "#2ecc71";
+
+                            // දැනුම් දීමෙන් පසු දිගටම පරීක්ෂා කිරීම (Listening) නවත්වන්න
+                            unsubscribe();
+                        }
+                    });
+            })
+            .catch((error) => {
+                console.error("Error sending request: ", error);
+                alert("ඉල්ලීම යැවීමේදී දෝෂයක් මතු විය.");
+                btnElement.innerHTML = originalText;
+                btnElement.disabled = false;
+            });
+    }
 };
