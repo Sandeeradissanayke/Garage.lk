@@ -23,15 +23,14 @@ window.sendTestNotification = function () {
         navigator.serviceWorker.ready.then(reg => {
             reg.showNotification('Garage.lk 🔴', {
                 body: 'අලුත් ඉල්ලීමක්! පාරිභෝගිකයෙකුට කාර්මිකයෙකු අවශ්‍ය වී ඇත.',
-                icon: 'https://cdn-icons-png.flaticon.com/512/198/198111.png', // කුඩා අයිකනයක්
-                vibrate: [200, 100, 200, 100, 200], // ෆෝන් එක වයිබ්‍රේට් වෙන රටාව
+                icon: 'https://cdn-icons-png.flaticon.com/512/198/198111.png',
+                vibrate: [200, 100, 200, 100, 200],
             });
         });
     } else {
         alert("කරුණාකර Notifications සඳහා Allow කරන්න.");
     }
 };
-
 
 // ==========================================
 // 0. FIREBASE DATABASE CONNECTION
@@ -48,6 +47,7 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+const auth = firebase.auth(); // Auth එක initialize කිරීම (අත්‍යවශ්‍යයි)
 
 // ==========================================
 // 1. HOME PAGE SERVICE CARDS SELECTION
@@ -98,97 +98,73 @@ if (signInTabBtn && signUpTabBtn) {
 }
 
 // ==========================================
-// 4. GARAGE REGISTRATION (register.html eken run wenawa)
+// 4. GARAGE REGISTRATION (register.html)
 // ==========================================
 const registerGarageForm = document.getElementById('registerGarageForm');
-let registerMap;
-let registerMarker;
-
-document.addEventListener('DOMContentLoaded', () => {
-    const mapContainer = document.getElementById('registerMap');
-    if (mapContainer) {
-        registerMap = L.map('registerMap').setView([7.8731, 80.7718], 7);
-        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles &copy; Esri' }).addTo(registerMap);
-        registerMarker = L.marker([7.8731, 80.7718], { draggable: true }).addTo(registerMap);
-
-        registerMarker.on('dragend', function () {
-            const pos = registerMarker.getLatLng();
-            document.getElementById('locationCoordinates').value = pos.lat.toFixed(5) + ", " + pos.lng.toFixed(5);
-        });
-
-        registerMap.on('click', function (e) {
-            registerMarker.setLatLng(e.latlng);
-            document.getElementById('locationCoordinates').value = e.latlng.lat.toFixed(5) + ", " + e.latlng.lng.toFixed(5);
-        });
-
-        if (typeof L.Control.Geocoder !== 'undefined') {
-            L.Control.geocoder({ defaultMarkGeocode: false, placeholder: "Search location..." })
-                .on('markgeocode', function (e) {
-                    const latlng = e.geocode.center;
-                    registerMarker.setLatLng(latlng);
-                    registerMap.setView(latlng, 15);
-                    document.getElementById('locationCoordinates').value = latlng.lat.toFixed(5) + ", " + latlng.lng.toFixed(5);
-                }).addTo(registerMap);
-        }
-
-        setTimeout(() => { registerMap.invalidateSize(); }, 300);
-    }
-});
-
-const regSrvBtns = document.querySelectorAll('.reg-srv-btn');
-regSrvBtns.forEach(btn => {
-    btn.addEventListener('click', function () {
-        this.classList.toggle('active');
-    });
-});
-
 if (registerGarageForm) {
     registerGarageForm.addEventListener('submit', function (e) {
         e.preventDefault();
 
-        const pass = document.getElementById('garagePassword').value;
-        const confirmPass = document.getElementById('garageConfirmPassword').value;
-        if (pass.length < 6) { alert("Password එක සඳහා අවම වශයෙන් අකුරු හෝ ඉලක්කම් 6ක් අවශ්‍යයි."); return; }
-        if (pass !== confirmPass) { alert("ඔබ ඇතුළත් කළ පාස්වර්ඩ් දෙක එකිනෙකට නොගැළපේ."); return; }
+        const gName = document.querySelector('input[placeholder="Enter garage name"]').value;
+        const gPhone = document.querySelector('input[placeholder="Enter contact number"]').value;
+        const gEmail = document.getElementById('garageEmail').value;
+        const gPassword = document.getElementById('garagePassword').value;
 
-        const selectedRegServices = Array.from(document.querySelectorAll('.reg-srv-btn.active')).map(btn => btn.getAttribute('data-value'));
-        if (selectedRegServices.length === 0) {
-            alert("කරුණාකර ඔබගේ ගරාජයෙන් සපයන එක් සේවාවක් හෝ තෝරන්න.");
+        // Confirm Password එක ලබා ගැනීම
+        const confirmPassInput = document.getElementById('garageConfirmPassword');
+        const gConfirmPassword = confirmPassInput ? confirmPassInput.value : "";
+
+        if (!gEmail) { alert("කරුණාකර ඔබගේ ඊමේල් ලිපිනය ඇතුළත් කරන්න."); return; }
+        if (gPassword.length < 6) { alert("මුරපදය අකුරු/ඉලක්කම් 6කට වඩා වැඩි විය යුතුය."); return; }
+
+        // මුරපද දෙක ගැලපෙනවද බැලීම
+        if (confirmPassInput && gPassword !== gConfirmPassword) {
+            alert("ඔබ ඇතුළත් කළ මුරපදයන් (Passwords) එකිනෙකට නොගැලපේ!");
             return;
         }
 
-        const gName = document.querySelector('input[placeholder="Enter garage name"]').value;
-        const gPhone = document.querySelector('input[placeholder="Enter contact number"]').value;
         const locCoords = document.getElementById('locationCoordinates').value;
         if (!locCoords) { alert("කරුණාකර සිතියමේ ඔබගේ ස්ථානය ලකුණු කරන්න."); return; }
-
         const coordsArray = locCoords.split(',');
-        const newGarage = {
-            name: gName,
-            lat: parseFloat(coordsArray[0]),
-            lng: parseFloat(coordsArray[1]),
-            phone: gPhone,
-            services: selectedRegServices
-        };
+
+        const selectedRegServices = [];
+        document.querySelectorAll('.reg-srv-btn.active').forEach(btn => {
+            selectedRegServices.push(btn.dataset.value);
+        });
+
+        if (selectedRegServices.length === 0) { alert("කරුණාකර අවම වශයෙන් එක් සේවාවක් හෝ තෝරන්න."); return; }
 
         const submitBtn = document.querySelector('#registerGarageForm .submit-btn');
-        submitBtn.innerHTML = "SAVING TO DATABASE...";
+        submitBtn.innerText = "Registering...";
+        submitBtn.disabled = true;
 
-        db.collection("garages").add(newGarage).then(() => {
-            alert("Registration Successfully! ඔබගේ ගරාජය අන්තර්ජාල දත්ත සමුදායට එක් කරන ලදී.");
-            registerGarageForm.reset();
-            document.querySelectorAll('.reg-srv-btn.active').forEach(btn => btn.classList.remove('active'));
-            if (registerMarker) {
-                registerMarker.setLatLng([7.8731, 80.7718]);
-                document.getElementById('locationCoordinates').value = '';
-            }
-            submitBtn.innerHTML = "SUBMIT REGISTRATION";
-            window.location.href = "index.html";
-        }).catch((error) => {
-            console.error("Error adding document: ", error);
-            alert("දත්ත ඇතුළත් කිරීමේදී දෝෂයක් මතු විය. කරුණාකර Firebase Firestore Security Rules පරීක්ෂා කරන්න.");
-            submitBtn.innerHTML = "SUBMIT REGISTRATION";
-        });
+        auth.createUserWithEmailAndPassword(gEmail, gPassword)
+            .then((userCredential) => {
+                const user = userCredential.user;
+
+                const newGarage = {
+                    uid: user.uid,
+                    name: gName,
+                    email: gEmail,
+                    lat: parseFloat(coordsArray[0]),
+                    lng: parseFloat(coordsArray[1]),
+                    phone: gPhone,
+                    services: selectedRegServices,
+                    status: "online"
+                };
+
+                return db.collection("garages").add(newGarage);
+            })
+            .then(() => {
+                alert("ඔබේ ගරාජය සාර්ථකව ලියාපදිංචි කරන ලදී!");
+                window.location.href = "dashboard.html";
+            })
+            .catch(error => {
+                console.error("Error registering garage: ", error);
+                alert("ලියාපදිංචි වීමේදී දෝෂයක් ඇතිවිය: " + error.message);
+                submitBtn.innerText = "Complete Registration";
+                submitBtn.disabled = false;
+            });
     });
 }
 
@@ -354,7 +330,6 @@ if (garagesMapModal) garagesMapModal.addEventListener('click', (e) => { if (e.ta
 // 6. SEND MECHANIC REQUEST TO FIREBASE
 // ==========================================
 window.sendMechanicRequest = function (garagePhone, garageName, btnElement) {
-    // 1. පාරිභෝගිකයාගෙන් දුරකථන අංකය ඉල්ලීම
     let customerPhone = prompt("කරුණාකර ඔබගේ දුරකථන අංකය ඇතුළත් කරන්න:");
 
     if (customerPhone == null || customerPhone.trim() === "") {
@@ -366,26 +341,22 @@ window.sendMechanicRequest = function (garagePhone, garageName, btnElement) {
     btnElement.innerHTML = "SENDING...";
     btnElement.disabled = true;
 
-    // 2. ලොකේෂන් එක ලබා ගැනීම
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             function (position) {
-                // ලොකේෂන් එක ලැබුණොත්
                 sendDataToFirebase(position.coords.latitude, position.coords.longitude);
             },
             function (error) {
-                // ලොකේෂන් එක දුන්නේ නැත්නම් හෝ දෝෂයක් ආවොත්
                 alert("අවවාදයයි: ඔබගේ ස්ථානය ලබා ගැනීමට නොහැකි විය. ගරාජය ඔබව දුරකථනයෙන් සම්බන්ධ කර ගනු ඇත.");
-                sendDataToFirebase(null, null); // ලොකේෂන් නැතුව යවනවා
+                sendDataToFirebase(null, null);
             },
-            { enableHighAccuracy: true } // වඩාත් නිවැරදි ස්ථානය ගන්න
+            { enableHighAccuracy: true }
         );
     } else {
         alert("ඔබගේ බ්‍රවුසරය ස්ථානය ලබා දීමට සහය නොදක්වයි.");
         sendDataToFirebase(null, null);
     }
 
-    // 3. Firebase එකට දත්ත යවන කොටස
     function sendDataToFirebase(lat, lng) {
         const requestData = {
             garagePhone: garagePhone,
@@ -403,17 +374,13 @@ window.sendMechanicRequest = function (garagePhone, garageName, btnElement) {
                 btnElement.innerHTML = "WAITING...";
                 btnElement.style.background = "#f39c12";
 
-                // අලුත් කොටස: ගරාජයෙන් ඉල්ලීම Accept කරන තුරු Real-time බලා සිටීම
                 const unsubscribe = db.collection("requests").doc(docRef.id)
                     .onSnapshot((doc) => {
                         const data = doc.data();
                         if (data && data.status === "accepted") {
-                            // ගරාජය ඉල්ලීම භාරගත් පසු පාරිභෝගිකයාට දැනුම් දීම
                             alert("✅ සුබ ආරංචියක්! " + garageName + " විසින් ඔබගේ ඉල්ලීම භාරගෙන ඇත. ඔවුන් ඉක්මනින් ඔබව දුරකථනයෙන් අමතනු ඇත.");
                             btnElement.innerHTML = "ACCEPTED ✓";
                             btnElement.style.background = "#2ecc71";
-
-                            // දැනුම් දීමෙන් පසු දිගටම පරීක්ෂා කිරීම (Listening) නවත්වන්න
                             unsubscribe();
                         }
                     });
@@ -428,17 +395,14 @@ window.sendMechanicRequest = function (garagePhone, garageName, btnElement) {
 };
 
 // ==========================================
-// MOBILE MENU TOGGLE LOGIC
+// 7. MOBILE MENU TOGGLE LOGIC
 // ==========================================
 const mobileMenuBtn = document.getElementById('mobile-menu');
 const navMenu = document.getElementById('nav-menu');
 
 if (mobileMenuBtn && navMenu) {
     mobileMenuBtn.addEventListener('click', () => {
-        // 'active' කියන class එක දැම්මම CSS වල තියෙන විදිහට මෙනුව එළියට එනවා
         navMenu.classList.toggle('active');
-
-        // අයිකන් එක 'හතරැස්' (bars) එකෙන් 'කතිරය' (times) එකට මාරු කිරීම
         if (navMenu.classList.contains('active')) {
             mobileMenuBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
         } else {
@@ -446,12 +410,61 @@ if (mobileMenuBtn && navMenu) {
         }
     });
 
-    // මෙනු එකේ ලින්ක් එකක් එබුවම මෙනුව ඔටෝම වැහෙන විදිහට හැදීම
     const navLinks = document.querySelectorAll('.nav-link');
     navLinks.forEach(link => {
         link.addEventListener('click', () => {
             navMenu.classList.remove('active');
             mobileMenuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+        });
+    });
+}
+
+// ==========================================
+// 8. අලුතින් එකතු කළ කොටස: REGISTRATION සිතියම (MAP) ලෝඩ් කිරීම
+// ==========================================
+const regMapElement = document.getElementById('registerMap');
+if (regMapElement) {
+    // ශ්‍රී ලංකාව මැදට වෙන්න සිතියම පෙන්වීම
+    const regMap = L.map('registerMap').setView([7.8731, 80.7718], 7);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(regMap);
+
+    let marker;
+
+    // සිතියම ක්ලික් කළ විට ලොකේෂන් එක ගැනීම
+    regMap.on('click', function (e) {
+        const lat = e.latlng.lat;
+        const lng = e.latlng.lng;
+
+        // පරණ මාකර් එක අයින් කරලා අලුත් තැන මාකර් එකක් දැමීම
+        if (marker) {
+            regMap.removeLayer(marker);
+        }
+        marker = L.marker([lat, lng]).addTo(regMap);
+
+        // HTML එකේ තියෙන Input කොටුවට අදාළ ඛණ්ඩාංක (coordinates) දැමීම
+        document.getElementById('locationCoordinates').value = `${lat},${lng}`;
+    });
+}
+
+// ==========================================
+// 9. අලුතින් එකතු කළ කොටස: REGISTRATION සේවා (Services) තේරීමේ බොත්තම්
+// ==========================================
+const regServiceBtns = document.querySelectorAll('.reg-srv-btn');
+if (regServiceBtns.length > 0) {
+    regServiceBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            btn.classList.toggle('active');
+            // තේරුවාම බොත්තමේ පාට වෙනස් වීම
+            if (btn.classList.contains('active')) {
+                btn.style.background = "#1d3eff";
+                btn.style.color = "white";
+            } else {
+                btn.style.background = "";
+                btn.style.color = "";
+            }
         });
     });
 }
