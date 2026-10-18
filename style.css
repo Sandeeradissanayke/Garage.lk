@@ -832,14 +832,8 @@ body.light-mode .footer-contact p {
     border-radius: 50%;
     color: #fff;
     text-decoration: none;
-    display: inline-block;
-}
-
-.social-icon i {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    display: grid;
+    place-items: center;
 }
 
 
