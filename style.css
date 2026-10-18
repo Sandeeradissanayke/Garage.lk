@@ -822,6 +822,7 @@ body.light-mode .footer-contact p {
     display: flex;
     gap: 12px;
     margin-top: 15px;
+    justify-content: center; /* සම්පූර්ණ සෙට් එකම මැදට ගන්න මේක add කරන්න */
 }
 
 .social-icon {
@@ -834,10 +835,12 @@ body.light-mode .footer-contact p {
     display: flex;
     align-items: center;
     justify-content: center;
+    text-align: center;
 }
 
 .social-icon i {
-    line-height: 1;
+    margin: auto;
+    line-height: normal;
 }
 
 
