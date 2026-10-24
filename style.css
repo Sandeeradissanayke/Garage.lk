@@ -73,7 +73,7 @@ body.light-mode {
     }
 
     /* ප්‍රධාන මෙනුවේ අකුරු සහ ලින්ක් ෆෝන් එකේදී සැඟවීම (Hamburger Menu සඳහා) */
-    /* ෆෝන් එකේදී මෙනු බොත්තම පෙන්වීම */
+    /* Showing menu button in phone */
     .menu-toggle {
         display: block;
         font-size: 24px;
