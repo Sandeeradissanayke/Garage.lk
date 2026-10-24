@@ -1064,32 +1064,7 @@ body.light-mode .footer-logo p {
    MOBILE RESPONSIVENESS (ෆෝන් සඳහා පමණක්)
    ========================================== */
 @media screen and (max-width: 768px) {
-    .header-container {
-        padding: 10px 15px;
-        position: absolute;
-        /* පාවෙන්නේ නැතුව උඩින්ම පමණක් රැඳී සිටීම */
-    }
-
-    .header {
-        padding: 12px 20px;
-        border-radius: 10px;
-    }
-
-    .nav-menu {
-        display: none;
-        /* දැනට මෙනු එක සඟවන්න */
-    }
-
-    .logo {
-        font-size: 22px;
-    }
-
-    /* Hero section එක (මුල් රූපය) Header එකට යට නොවී පහළින් පටන් ගැනීමට */
     .hero {
         margin-top: 100px;
     }
-}
-
-.menu-toggle {
-    display: none;
 }

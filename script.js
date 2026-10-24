@@ -208,10 +208,23 @@ if (useCurrentLocBtn) {
                     useCurrentLocBtn.style.color = "#25d366";
                 },
                 (err) => {
-                    alert("Location access denied.");
+                    console.error("Could not get current location:", err);
+                    alert("Could not get your location. Allow location access and try again, or enter a town/area.");
                     useCurrentLocBtn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Use current location';
                 }
             );
+        } else {
+            alert("This browser does not support location access. Enter a town or area instead.");
+        }
+    });
+}
+
+if (searchAreaInput) {
+    searchAreaInput.addEventListener('input', () => {
+        userCoords = null;
+        if (useCurrentLocBtn) {
+            useCurrentLocBtn.style.removeProperty('color');
+            useCurrentLocBtn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Use current location';
         }
     });
 }
@@ -231,15 +244,24 @@ if (findGaragesBtn && garagesMapModal) {
             searchLng = userCoords[1];
         } else if (searchAreaInput && searchAreaInput.value.trim() !== "" && searchAreaInput.value !== "Current Location Detected") {
             try {
-                const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${searchAreaInput.value.trim()}, Sri Lanka`);
+                const query = `${searchAreaInput.value.trim()}, Sri Lanka`;
+                const params = new URLSearchParams({ format: 'json', q: query, limit: '1' });
+                const response = await fetch(`https://nominatim.openstreetmap.org/search?${params}`);
+                if (!response.ok) throw new Error(`Location lookup failed (${response.status})`);
                 const data = await response.json();
+                if (!data || data.length === 0) throw new Error("No matching location was found.");
                 if (data && data.length > 0) {
                     searchLat = parseFloat(data[0].lat);
                     searchLng = parseFloat(data[0].lon);
                 } else {
                     alert("ඔබ ලබාදුන් නගරය සිතියමේ සොයාගත නොහැක.");
                 }
-            } catch (err) { console.log(err); }
+            } catch (err) {
+                console.error("Location search failed:", err);
+                alert("Could not find that location. Check the spelling or try another town/area.");
+                findGaragesBtn.innerHTML = "FIND NEARBY GARAGES";
+                return;
+            }
         }
 
         try {
@@ -255,6 +277,7 @@ if (findGaragesBtn && garagesMapModal) {
             }
 
             const filteredGarages = allGarages.filter(garage => {
+                if (!Number.isFinite(Number(garage.lat)) || !Number.isFinite(Number(garage.lng))) return false;
                 let serviceMatch = true;
                 if (selectedServices.length > 0) {
                     if (!garage.services) return false;
@@ -427,8 +450,8 @@ if (regMapElement) {
     // ශ්‍රී ලංකාව මැදට වෙන්න සිතියම පෙන්වීම
     const regMap = L.map('registerMap').setView([7.8731, 80.7718], 7);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri'
     }).addTo(regMap);
 
     let marker;
