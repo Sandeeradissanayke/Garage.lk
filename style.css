@@ -1127,7 +1127,13 @@ body.light-mode .footer-logo p {
     background-color: #25d366; /* WhatsApp Green */
 }
 
+/* Phone calling optio is only avalable in Mobile */
 .phone-float {
-    background-color: #ffcc00; /* Garage.lk Yellow theme */
-    color: #070d1b;
+    display: none; /* පරිගණක (PC) වලදී නොපෙන්වයි */
+}
+
+@media screen and (max-width: 768px) {
+    .phone-float {
+        display: flex; /* ෆෝන් වලදී පමණක් පෙන්වයි */
+    }
 }
