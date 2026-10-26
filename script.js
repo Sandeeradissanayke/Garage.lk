@@ -66,11 +66,26 @@ function toggleService(card) {
 // 2. DARK / LIGHT THEME TOGGLE
 // ==========================================
 const themeToggleBtn = document.getElementById('themeToggleBtn');
+
+// පිටුව ලෝඩ් වන විට කලින් සේව් කර තිබූ theme එක පරීක්ෂා කිරීම
+if (localStorage.getItem('theme') === 'light') {
+    document.body.classList.add('light-mode');
+}
+
 if (themeToggleBtn) {
     themeToggleBtn.addEventListener('click', () => {
         document.body.classList.toggle('light-mode');
+        
+        // වත්මන් තත්ත්වය localStorage හි සුරැකීම
+        if (document.body.classList.contains('light-mode')) {
+            localStorage.setItem('theme', 'light');
+        } else {
+            localStorage.setItem('theme', 'dark');
+        }
     });
 }
+
+
 
 // ==========================================
 // 3. LOGIN / SIGN UP MODAL LOGIC
