@@ -304,39 +304,51 @@ if (findGaragesBtn && garagesMapModal) {
                 const garageIcon = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
                 const userIcon = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
 
-                filteredGarages.forEach(garage => {
-                    let distText = "";
-                    if (searchLat && searchLng) {
-                        const dist = getDistance(searchLat, searchLng, garage.lat, garage.lng);
-                        distText = `<p style="margin:0 0 5px 0; font-size:12px; color:red;"><b>Distance:</b> ${dist.toFixed(1)} km</p>`;
+            filteredGarages.forEach(garage => {
+    let distText = "";
+    // Google Maps Directions Link එක සකස් කිරීම
+    let directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${garage.lat},${garage.lng}`;
+    
+    if (searchLat && searchLng) {
+        const dist = getDistance(searchLat, searchLng, garage.lat, garage.lng);
+        distText = `<p style="margin:0 0 5px 0; font-size:12px; color:red;"><b>Distance:</b> ${dist.toFixed(1)} km</p>`;
+        // පාරිභෝගිකයා සිටින තැන සිට ගරාජය වෙත මාර්ගය ලබා දීම
+        directionsUrl = `https://www.google.com/maps/dir/?api=1&origin=${searchLat},${searchLng}&destination=${garage.lat},${garage.lng}`;
+    }
+
+    const popupContent = `
+        <div style="color: black; width: 190px;">
+            <h4 style="margin:0 0 5px 0;">${garage.name}</h4>
+            <p style="margin:0 0 5px 0; font-size:12px;"><b>Services:</b> ${garage.services ? garage.services.join(", ") : "N/A"}</p>
+            <p style="margin:0 0 5px 0; font-size:12px;"><b>Phone:</b> ${garage.phone}</p>
+            ${distText}
+            
+            <!-- Google Maps Directions බොත්තම -->
+            <a href="${directionsUrl}" target="_blank" style="display:block; text-align:center; background:#2ecc71; color:white; text-decoration:none; padding:7px; border-radius:4px; font-weight:bold; font-size:12px; margin-bottom:6px;">
+                <i class="fa-solid fa-diamond-turn-right"></i> Get Directions (Google Maps)
+            </a>
+
+            <button onclick="sendMechanicRequest('${garage.phone}', '${garage.name}', this)" style="background:#1d3eff; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer; width:100%; font-weight:bold;">Request Mechanic</button>
+        </div>`;
+    L.marker([garage.lat, garage.lng], { icon: garageIcon }).addTo(resultsMap).bindPopup(popupContent);
+            });
+
+
+                    if (searchLat !== null && searchLng !== null) {
+                        L.marker([searchLat, searchLng], { icon: userIcon }).addTo(resultsMap).bindPopup("<b>You are here!</b>").openPopup();
+                        resultsMap.setView([searchLat, searchLng], 12);
+                  } else {
+                        resultsMap.setView([7.8731, 80.7718], 7);
                     }
+                    resultsMap.invalidateSize();
+                }, 400);
 
-                    const popupContent = `
-                        <div style="color: black; width: 180px;">
-                            <h4 style="margin:0 0 5px 0;">${garage.name}</h4>
-                            <p style="margin:0 0 5px 0; font-size:12px;"><b>Services:</b> ${garage.services ? garage.services.join(", ") : "N/A"}</p>
-                            <p style="margin:0 0 5px 0; font-size:12px;"><b>Phone:</b> ${garage.phone}</p>
-                            ${distText}
-                            <button onclick="sendMechanicRequest('${garage.phone}', '${garage.name}', this)" style="background:#1d3eff; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer; width:100%; font-weight:bold;">Request Mechanic</button>
-                        </div>`;
-                    L.marker([garage.lat, garage.lng], { icon: garageIcon }).addTo(resultsMap).bindPopup(popupContent);
-                });
-
-                if (searchLat !== null && searchLng !== null) {
-                    L.marker([searchLat, searchLng], { icon: userIcon }).addTo(resultsMap).bindPopup("<b>You are here!</b>").openPopup();
-                    resultsMap.setView([searchLat, searchLng], 12);
-                } else {
-                    resultsMap.setView([7.8731, 80.7718], 7);
-                }
-                resultsMap.invalidateSize();
-            }, 400);
-
-        } catch (error) {
-            console.error("Error fetching data: ", error);
-            alert("අන්තර්ජාලයෙන් දත්ත ලබා ගැනීමේදී දෝෂයක් ඇති විය.");
-            findGaragesBtn.innerHTML = "FIND NEARBY GARAGES";
-        }
-    });
+            } catch (error) {
+                console.error("Error fetching data: ", error);
+                alert("අන්තර්ජාලයෙන් දත්ත ලබා ගැනීමේදී දෝෂයක් ඇති විය.");
+                findGaragesBtn.innerHTML = "FIND NEARBY GARAGES";
+            }
+         });
 }
 if (closeGaragesMapModal) closeGaragesMapModal.addEventListener('click', () => garagesMapModal.classList.remove('active'));
 if (garagesMapModal) garagesMapModal.addEventListener('click', (e) => { if (e.target === garagesMapModal) garagesMapModal.classList.remove('active'); });
