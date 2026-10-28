@@ -57,3 +57,18 @@ loginForm.addEventListener('submit', (e) => {
             }
         });
 });
+// Show / Hide Password Toggle
+const togglePassword = document.getElementById('togglePassword');
+const passwordInput = document.getElementById('password');
+
+if (togglePassword && passwordInput) {
+    togglePassword.addEventListener('click', function () {
+        // Password එක සහ Text එක අතර මාරු කිරීම
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+
+        // අයිකනය (fa-eye සහ fa-eye-slash) අතර මාරු කිරීම
+        this.classList.toggle('fa-eye');
+        this.classList.toggle('fa-eye-slash');
+    });
+}
