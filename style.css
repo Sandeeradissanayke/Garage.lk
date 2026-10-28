@@ -113,9 +113,30 @@ body.light-mode {
     }
 }
 
+/* 1. පිටත Container එක විනිවිද පෙනෙන ලෙස තැබීම */
+body.light-mode .header-container {
+    background: transparent !important;
+}
 body.light-mode .header {
-    background-color: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.28) !important; /* පසුබිම හොඳින් පෙනෙන සේ විනිවිද බව වැඩි කිරීම */
+    backdrop-filter: blur(16px) saturate(180%) !important; /* පිටුපස ඇති පින්තූරය බොඳ කර වීදුරු පෙනුම ලබා දීම */
+    -webkit-backdrop-filter: blur(16px) saturate(180%) !important; /* Safari සහ අයිෆෝන් බ්‍රවුසර සඳහා */
+    border: 1px solid rgba(255, 255, 255, 0.5) !important; /* සියුම් සුදු වීදුරු දාරය (Glass border) */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important; /* මෘදු සෙවණැල්ල */
+}
+/* 3. වීදුරුව මත අකුරු කැපී පෙනෙන ලෙස තද පැහැයෙන් තැබීම */
+body.light-mode .header .logo,
+body.light-mode .header .logo h1 {
+    color: #0f172a !important;
+}
+
+body.light-mode .nav-menu .nav-link {
+    color: #0f172a !important;
+    font-weight: 600 !important; /* අකුරු පැහැදිලිව කියවීමට තද කිරීම */
+}
+
+body.light-mode .nav-menu .nav-link:hover {
+    color: #1d3eff !important;
 }
 
 .logo-link {
@@ -220,6 +241,7 @@ body.light-mode .nav-menu .nav-link.active-page {
     font-size: 24px;
     color: #ffffff;
     cursor: pointer;
+    z-index: 1001;
 }
 
 body.light-mode .menu-toggle {
@@ -298,25 +320,27 @@ body.light-mode .slider-thumb {
    ========================================== */
 @media screen and (max-width: 992px) {
     .menu-toggle {
-        display: block;
+        display: block !important;
     }
 
     .nav-menu {
-        display: none;
+        position: fixed;
+        top: 0;
+        right: -100%; /* සාමාන්‍ය අවස්ථාවේදී මෙනුව තිරයෙන් පිටත තැබීම */
+        width: 260px;
+        height: 100vh;
+        background-color: #0f172a;
+        display: flex;
         flex-direction: column;
-        width: 100%;
-        position: absolute;
-        top: 70px;
-        left: 0;
-        background-color: rgba(10, 18, 38, 0.98);
-        border-radius: 14px;
-        padding: 20px 0;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-        z-index: 999;
+        gap: 15px;
+        padding: 80px 25px 25px;
+        box-shadow: -4px 0 15px rgba(0, 0, 0, 0.5);
+        transition: right 0.3s ease;
+        z-index: 1000;
     }
 
     .nav-menu.active {
-        display: flex;
+        right: 0;
     }
 
     body.light-mode .nav-menu {
