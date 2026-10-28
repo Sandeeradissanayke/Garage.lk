@@ -1114,9 +1114,6 @@ body.light-mode .footer-logo p {
     }
 }
 
-.menu-toggle {
-    display: none;
-}
 /* Floating WhatsApp & Call Buttons Styling */
 .floating-whatsapp {
     position: fixed;
