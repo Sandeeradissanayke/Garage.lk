@@ -1150,6 +1150,7 @@ body.light-mode .footer-logo p {
     /* WhatsApp කොළ පාට */
 }
 
+<<<<<<< HEAD
 .phone-btn {
     background-color: #007bff;
     /* Phone නිල් පාට */
@@ -1157,6 +1158,50 @@ body.light-mode .footer-logo p {
 
 /* ෆෝන් එකෙන් බලද්දී බොත්තම් ටිකක් පොඩි වෙන්න */
 @media (max-width: 768px) {
+=======
+/* Phone Call Floating Button */
+.phone-float {
+    /* Desktop එකේ සඟවා, phone තිරවල පමණක් පහළ media query එකෙන් පෙන්වයි */
+    display: none;
+    background: linear-gradient(135deg, #1d3eff, #0e24cc);
+}
+
+.phone-float:hover {
+    background: linear-gradient(135deg, #2a4cff, #152de6);
+    box-shadow: 0 6px 20px rgba(29, 62, 255, 0.55);
+}
+
+.phone-float:hover i {
+    animation: phone-shake 0.4s ease-in-out;
+}
+
+/* WhatsApp Floating Button */
+.whatsapp-float {
+    background-color: #25d366;
+}
+
+.whatsapp-float:hover {
+    background-color: #20ba5a;
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.55);
+}
+
+/* Ring shake animation for phone icon on hover */
+@keyframes phone-shake {
+    0%, 100% { transform: rotate(0deg); }
+    20% { transform: rotate(-15deg); }
+    40% { transform: rotate(15deg); }
+    60% { transform: rotate(-10deg); }
+    80% { transform: rotate(10deg); }
+}
+
+/* Mobile Responsiveness & Safe Area Support */
+@media screen and (max-width: 768px) {
+    .phone-float {
+        display: flex;
+    }
+
+    .floating-whatsapp,
+>>>>>>> 6d764fc (Show call button on mobile only)
     .floating-contact-buttons {
         bottom: 20px;
         right: 20px;
@@ -1167,4 +1212,25 @@ body.light-mode .footer-logo p {
         height: 50px;
         font-size: 24px;
     }
+<<<<<<< HEAD
 }
+=======
+}
+
+@media print {
+    .floating-whatsapp,
+    .floating-contact-buttons {
+        display: none !important;
+    }
+}
+.phone-float {
+    display: none;
+    background: linear-gradient(135deg, #1d3eff, #0e24cc);
+}
+@media screen and (max-width: 768px) {
+    .phone-float {
+        display: flex;
+    }
+}
+
+>>>>>>> 6d764fc (Show call button on mobile only)
