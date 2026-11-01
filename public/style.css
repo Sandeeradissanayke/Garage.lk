@@ -220,6 +220,12 @@ body.light-mode .nav-menu .nav-link.active-page {
     font-size: 24px;
     color: #ffffff;
     cursor: pointer;
+    background: transparent;
+    border: 0;
+    padding: 8px;
+    line-height: 1;
+    position: relative;
+    z-index: 1001;
 }
 
 body.light-mode .menu-toggle {
@@ -316,7 +322,7 @@ body.light-mode .slider-thumb {
     }
 
     .nav-menu.active {
-        display: flex;
+        display: flex !important;
     }
 
     body.light-mode .nav-menu {
@@ -1079,10 +1085,6 @@ body.light-mode .footer-logo p {
     .hero {
         margin-top: 100px;
     }
-}
-
-.menu-toggle {
-    display: none;
 }
 
 /* Floating WhatsApp and phone contact buttons */

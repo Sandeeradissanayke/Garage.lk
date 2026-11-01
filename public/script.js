@@ -401,21 +401,21 @@ const mobileMenuBtn = document.getElementById('mobile-menu');
 const navMenu = document.getElementById('nav-menu');
 
 if (mobileMenuBtn && navMenu) {
+    const setMenuOpen = (isOpen) => {
+        navMenu.classList.toggle('active', isOpen);
+        mobileMenuBtn.setAttribute('aria-expanded', String(isOpen));
+        mobileMenuBtn.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+        mobileMenuBtn.innerHTML = isOpen
+            ? '<i class="fa-solid fa-xmark" aria-hidden="true"></i>'
+            : '<i class="fa-solid fa-bars" aria-hidden="true"></i>';
+    };
+
     mobileMenuBtn.addEventListener('click', () => {
-        navMenu.classList.toggle('active');
-        if (navMenu.classList.contains('active')) {
-            mobileMenuBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
-        } else {
-            mobileMenuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
-        }
+        setMenuOpen(!navMenu.classList.contains('active'));
     });
 
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            navMenu.classList.remove('active');
-            mobileMenuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
-        });
+    navMenu.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => setMenuOpen(false));
     });
 }
 
