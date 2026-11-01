@@ -71,112 +71,10 @@
         <div class="news-section-wrapper">
             <section class="news-section">
                 <div class="news-grid" id="newsGrid">
-                    
-                    <!-- Visible Cards -->
-                    <div class="news-card" onclick="window.location.href='newsin.html';" style="cursor: pointer;">
-                        <div class="news-image-wrapper">
-                            <span class="news-date">March 13, 2026</span>
-                            <img src="Towing.webp" alt="News Article Image">
-                        </div>
-                        <div class="news-content">
-                            <h4>PickMe 'Nena Pahana'<br>Brings Human Connection<br>To The Digital Platform Economy</h4>
-                            <a href="newsin.html" class="news-arrow"><i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-
-                    <div class="news-card" onclick="window.location.href='newsin.html';" style="cursor: pointer;">
-                        <div class="news-image-wrapper">
-                            <span class="news-date">March 13, 2026</span>
-                            <img src="Towing.webp" alt="News Article Image">
-                        </div>
-                        <div class="news-content">
-                            <h4>PickMe 'Nena Pahana'<br>Brings Human Connection<br>To The Digital Platform Economy</h4>
-                            <a href="newsin.html" class="news-arrow"><i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-
-                    <div class="news-card" onclick="window.location.href='newsin.html';" style="cursor: pointer;">
-                        <div class="news-image-wrapper">
-                            <span class="news-date">March 13, 2026</span>
-                            <img src="Towing.webp" alt="News Article Image">
-                        </div>
-                        <div class="news-content">
-                            <h4>PickMe 'Nena Pahana'<br>Brings Human Connection<br>To The Digital Platform Economy</h4>
-                            <a href="newsin.html" class="news-arrow"><i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-
-                    <div class="news-card" onclick="window.location.href='newsin.html';" style="cursor: pointer;">
-                        <div class="news-image-wrapper">
-                            <span class="news-date">March 13, 2026</span>
-                            <img src="Towing.webp" alt="News Article Image">
-                        </div>
-                        <div class="news-content">
-                            <h4>PickMe 'Nena Pahana'<br>Brings Human Connection<br>To The Digital Platform Economy</h4>
-                            <a href="newsin.html" class="news-arrow"><i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-
-                    <div class="news-card" onclick="window.location.href='newsin.html';" style="cursor: pointer;">
-                        <div class="news-image-wrapper">
-                            <span class="news-date">March 13, 2026</span>
-                            <img src="Towing.webp" alt="News Article Image">
-                        </div>
-                        <div class="news-content">
-                            <h4>PickMe 'Nena Pahana'<br>Brings Human Connection<br>To The Digital Platform Economy</h4>
-                            <a href="newsin.html" class="news-arrow"><i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-
-                    <div class="news-card" onclick="window.location.href='newsin.html';" style="cursor: pointer;">
-                        <div class="news-image-wrapper">
-                            <span class="news-date">March 13, 2026</span>
-                            <img src="Towing.webp" alt="News Article Image">
-                        </div>
-                        <div class="news-content">
-                            <h4>PickMe 'Nena Pahana'<br>Brings Human Connection<br>To The Digital Platform Economy</h4>
-                            <a href="newsin.html" class="news-arrow"><i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-
-                    <!-- Hidden Cards -->
-                    <div class="news-card hidden-card" onclick="window.location.href='newsin.html';" style="cursor: pointer;">
-                        <div class="news-image-wrapper">
-                            <span class="news-date">April 05, 2026</span>
-                            <img src="Tyer.jpg" alt="News Article Image">
-                        </div>
-                        <div class="news-content">
-                            <h4>New Mobile Tyre Repair Service<br>Launched Across Colombo<br>For Quick Fixes</h4>
-                            <a href="newsin.html" class="news-arrow"><i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-
-                    <div class="news-card hidden-card" onclick="window.location.href='newsin.html';" style="cursor: pointer;">
-                        <div class="news-image-wrapper">
-                            <span class="news-date">April 12, 2026</span>
-                            <img src="Battery.webp" alt="News Article Image">
-                        </div>
-                        <div class="news-content">
-                            <h4>Top 5 Signs Your Vehicle<br>Needs a New Battery<br>Before You Get Stranded</h4>
-                            <a href="newsin.html" class="news-arrow"><i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-
-                    <div class="news-card hidden-card" onclick="window.location.href='newsin.html';" style="cursor: pointer;">
-                        <div class="news-image-wrapper">
-                            <span class="news-date">April 20, 2026</span>
-                            <img src="Engine.jpg" alt="News Article Image">
-                        </div>
-                        <div class="news-content">
-                            <h4>GARAGE.LK Partners With<br>Expert Mechanics<br>For Advanced Engine Diagnostics</h4>
-                            <a href="newsin.html" class="news-arrow"><i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-
                 </div>
 
                 <!-- Learn More Button -->
-                <div class="learn-more-wrapper" id="learnMoreContainer">
+                <div class="learn-more-wrapper" id="learnMoreContainer" style="display:none">
                     <button class="learn-more-btn" id="loadMoreBtn">Learn more <i class="fa-solid fa-arrow-down"></i></button>
                 </div>
             </section>
@@ -215,6 +113,8 @@
         </div>
     </footer>
 
+    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore-compat.js"></script>
     <script src="newsScript.js"></script>
 </body>
 </html>

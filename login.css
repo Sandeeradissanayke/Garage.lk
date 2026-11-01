@@ -89,3 +89,28 @@ h3 {
     margin-bottom: 15px;
     min-height: 20px;
 }
+/* Password Box එක තුළ Eye Icon එක නිවැරදිව තැබීම */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding-right: 42px !important; /* අයිකනය මත අකුරු නොවැටීමට දකුණෙන් ඉඩ තැබීම */
+}
+
+.password-wrapper i {
+    position: absolute;
+    right: 14px;
+    cursor: pointer;
+    color: #94a3b8;
+    font-size: 16px;
+    transition: color 0.2s ease;
+}
+
+.password-wrapper i:hover {
+    color: #ffffff;
+}
