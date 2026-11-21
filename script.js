@@ -207,7 +207,7 @@ function getDistance(lat1, lon1, lat2, lon2) {
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
     const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    th.sqrt(1 - a));
     return R * c;
 }
 
@@ -482,6 +482,44 @@ if (regMapElement) {
     }).addTo(regMap);
 
     let marker;
+        const useRegCurrentLocBtn = document.getElementById('useRegCurrentLocBtn');
+    if (useRegCurrentLocBtn) {
+        useRegCurrentLocBtn.addEventListener('click', () => {
+            if (!navigator.geolocation) {
+                alert("ඔබගේ බ්‍රවුසරය ස්ථානය ලබා දීමට (Geolocation) සහය නොදක්වයි.");
+                return;
+            }
+
+            useRegCurrentLocBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Detecting...';
+            useRegCurrentLocBtn.disabled = true;
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+
+                    if (marker) {
+                        regMap.removeLayer(marker);
+                    }
+                    marker = L.marker([lat, lng]).addTo(regMap);
+                    regMap.setView([lat, lng], 15);
+
+                    document.getElementById('locationCoordinates').value = `${lat},${lng}`;
+                    useRegCurrentLocBtn.innerHTML = '<i class="fa-solid fa-check"></i> Location Found';
+                    useRegCurrentLocBtn.style.color = "#25d366";
+                    useRegCurrentLocBtn.disabled = false;
+                },
+                (error) => {
+                    console.error("Geolocation error:", error);
+                    alert("ඔබගේ ස්ථානය ලබා ගැනීමට නොහැකි විය. කරුණාකර Location අවසරය ලබා දී නැවත උත්සාහ කරන්න.");
+                    useRegCurrentLocBtn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Use Current Location';
+                    useRegCurrentLocBtn.disabled = false;
+                },
+                { enableHighAccuracy: true }
+            );
+        });
+    }
+
 
     // සිතියම ක්ලික් කළ විට ලොකේෂන් එක ගැනීම
     regMap.on('click', function (e) {
