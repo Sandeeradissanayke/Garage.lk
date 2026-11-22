@@ -114,3 +114,31 @@ h3 {
 .password-wrapper i:hover {
     color: #ffffff;
 }
+
+.login-links {
+    margin-top: 22px;
+    font-size: 14px;
+    color: #94a3b8;
+}
+
+.login-links p {
+    margin: 0 0 12px 0;
+}
+
+.login-links a {
+    color: #facc15;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-links a:hover {
+    text-decoration: underline;
+}
+
+.back-home-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #cbd5e1 !important;
+    font-weight: 400 !important;
+}
