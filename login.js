@@ -72,3 +72,27 @@ if (togglePassword && passwordInput) {
         this.classList.toggle('fa-eye-slash');
     });
 }
+// Forgot Password (Password Reset Email)
+const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+if (forgotPasswordLink) {
+    forgotPasswordLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value.trim();
+
+        if (!email) {
+            errorMessage.style.color = "#ef4444";
+            errorMessage.innerHTML = "කරුණාකර පළමුව ඔබගේ ඊමේල් ලිපිනය ඇතුළත් කරන්න.";
+            return;
+        }
+
+        auth.sendPasswordResetEmail(email)
+            .then(() => {
+                errorMessage.style.color = "#2ecc71";
+                errorMessage.innerHTML = "මුරපදය වෙනස් කිරීමේ ලින්ක් එක ඔබගේ ඊමේල් ගිණුමට යවන ලදී!";
+            })
+            .catch((error) => {
+                errorMessage.style.color = "#ef4444";
+                errorMessage.innerHTML = "දෝෂයක්: " + error.message;
+            });
+    });
+}
