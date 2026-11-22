@@ -118,12 +118,23 @@ function loadRequests(garagePhone) {
 
 // Notification යැවීම
 function triggerNotification() {
-    if (Notification.permission === 'granted') {
-        new Notification("Garage.lk 🚨", {
-            body: "ඔබට අලුත් හයර් එකක් ලැබී ඇත! වහාම Dashboard එක බලන්න."
-        });
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+
+    const title = "Garage.lk 🚨";
+    const options = {
+        body: "ඔබට අලුත් හයර් එකක් ලැබී ඇත! වහාම Dashboard එක බලන්න.",
+        vibrate: [200, 100, 200]
+    };
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.ready
+            .then((reg) => reg.showNotification(title, options))
+            .catch(() => new Notification(title, options));
+    } else {
+        new Notification(title, options);
     }
 }
+
 
 // ඉල්ලීම භාර ගැනීම
 function acceptRequest(id) {
