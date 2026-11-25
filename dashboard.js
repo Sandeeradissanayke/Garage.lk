@@ -114,6 +114,37 @@ function loadRequests(garagePhone) {
                 acceptedList.innerHTML += card;
             });
         });
+
+        // අවසන් කළ ඉල්ලීම් (Completed) ලබා ගැනීම
+    db.collection("requests")
+        .where("garagePhone", "==", garagePhone)
+        .where("status", "==", "completed")
+        .onSnapshot((snapshot) => {
+            const completedList = document.getElementById('completedRequestsList');
+            if (!completedList) return;
+
+            completedList.innerHTML = "<h3>🏁 අවසන් කළ වැඩ (Completed)</h3>";
+
+            if (snapshot.empty) {
+                completedList.innerHTML += "<p class='empty-msg'>දැනට අවසන් කළ වැඩ නොමැත.</p>";
+                return;
+            }
+
+            snapshot.forEach((doc) => {
+                const req = doc.data();
+                const phone = req.customerPhone || "අංකයක් ලබාදී නැත";
+
+                const card = `
+                <div class="completed-card" id="${doc.id}">
+                    <h4>🏁 වැඩය සම්පූර්ණ කර ඇත</h4>
+                    <p><strong>දිනය/වේලාව:</strong> ${req.timestamp ? req.timestamp.toDate().toLocaleString() : 'දැන්'}</p>
+                    <p><strong>📞 පාරිභෝගික අංකය:</strong> <a href="tel:${phone}" style="color: white;">${phone}</a></p>
+                </div>
+              `;
+                completedList.innerHTML += card;
+            });
+        });
+
 }
 
 // Notification යැවීම
