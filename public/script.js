@@ -97,6 +97,41 @@ if (signInTabBtn && signUpTabBtn) {
     });
 }
 
+if (signInForm) {
+    signInForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const email = document.getElementById('modalSignInEmail')?.value.trim();
+        const password = document.getElementById('modalSignInPassword')?.value;
+        const submitButton = signInForm.querySelector('.submit-btn');
+        if (!email || !password) return;
+
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = 'Signing in...';
+        }
+        auth.signInWithEmailAndPassword(email, password)
+            .then(() => {
+                window.location.href = 'dashboard.html';
+            })
+            .catch((error) => {
+                alert(error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password'
+                    ? 'The email or password is incorrect.'
+                    : error.message);
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'SIGN IN';
+                }
+            });
+    });
+}
+
+if (signUpForm) {
+    signUpForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        window.location.href = 'register.html';
+    });
+}
+
 // ==========================================
 // 4. GARAGE REGISTRATION (register.html)
 // ==========================================

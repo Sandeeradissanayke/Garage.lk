@@ -112,6 +112,41 @@ if (signInTabBtn && signUpTabBtn) {
     });
 }
 
+if (signInForm) {
+    signInForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const email = document.getElementById('modalSignInEmail')?.value.trim();
+        const password = document.getElementById('modalSignInPassword')?.value;
+        const submitButton = signInForm.querySelector('.submit-btn');
+        if (!email || !password) return;
+
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = 'Signing in...';
+        }
+        auth.signInWithEmailAndPassword(email, password)
+            .then(() => {
+                window.location.href = 'dashboard.html';
+            })
+            .catch((error) => {
+                alert(error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password'
+                    ? 'The email or password is incorrect.'
+                    : error.message);
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'SIGN IN';
+                }
+            });
+    });
+}
+
+if (signUpForm) {
+    signUpForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        window.location.href = 'register.html';
+    });
+}
+
 // ==========================================
 // 4. GARAGE REGISTRATION (register.html)
 // ==========================================
@@ -202,7 +237,7 @@ const closeGaragesMapModal = document.getElementById('closeGaragesMapModal');
 let resultsMap;
 let userCoords = null;
 
-function (lat1, lon1, lat2, lon2) {
+function getDistance(lat1, lon1, lat2, lon2) {
     const R = 6371;
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
