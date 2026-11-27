@@ -13,6 +13,9 @@ if (!firebase.apps.length) {
 }
 const db = firebase.firestore();
 const auth = firebase.auth();
+let myGarageDocId = null;
+let myGarageStatus = "online";
+
 
 // ලොග් වී ඇති පරිශීලකයා පරීක්ෂා කිරීම
 auth.onAuthStateChanged((user) => {
