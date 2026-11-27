@@ -13,9 +13,9 @@ if (!firebase.apps.length) {
 }
 const db = firebase.firestore();
 const auth = firebase.auth();
+
 let myGarageDocId = null;
 let myGarageStatus = "online";
-
 
 // ලොග් වී ඇති පරිශීලකයා පරීක්ෂා කිරීම
 auth.onAuthStateChanged((user) => {
@@ -27,7 +27,12 @@ auth.onAuthStateChanged((user) => {
         db.collection("garages").where("email", "==", user.email).get()
             .then((querySnapshot) => {
                 if (!querySnapshot.empty) {
-                    const myGaragePhone = querySnapshot.docs[0].data().phone;
+                    const garageDoc = querySnapshot.docs[0];
+                    myGarageDocId = garageDoc.id;
+                    myGarageStatus = garageDoc.data().status || "online";
+                    updateAvailabilityUI();
+
+                    const myGaragePhone = garageDoc.data().phone;
                     loadRequests(myGaragePhone);
                 } else {
                     document.getElementById('requestsList').innerHTML = "<h3>⚠️ ඔබගේ ගිණුමට අදාළ ගරාජයක් දත්ත ගබඩාවේ හමු නොවීය!</h3>";
@@ -63,7 +68,7 @@ function loadRequests(garagePhone) {
             snapshot.forEach((doc) => {
                 const req = doc.data();
 
-                // දුරකථන අංකය සහ ලොකේෂන් එක සකස් කිරීම (අලුත් කොටස)
+                // දුරකථන අංකය සහ ලොකේෂන් එක සකස් කිරීම
                 const phone = req.customerPhone || "අංකයක් ලබාදී නැත";
                 let locationHTML = (req.customerLat && req.customerLng) ?
                     `<a href="https://www.google.com/maps?q=${req.customerLat},${req.customerLng}" target="_blank" style="color: #06b6d4;">සිතියමේ බලන්න (Google Maps)</a>` :
@@ -97,7 +102,6 @@ function loadRequests(garagePhone) {
             snapshot.forEach((doc) => {
                 const req = doc.data();
 
-                // දුරකථන අංකය සහ ලොකේෂන් එක සකස් කිරීම (අලුත් කොටස)
                 const phone = req.customerPhone || "අංකයක් ලබාදී නැත";
                 let locationHTML = (req.customerLat && req.customerLng) ?
                     `<a href="https://www.google.com/maps?q=${req.customerLat},${req.customerLng}" target="_blank" style="color: #06b6d4;">සිතියමේ බලන්න (Google Maps)</a>` :
@@ -109,8 +113,6 @@ function loadRequests(garagePhone) {
                     <p><strong>දිනය/වේලාව:</strong> ${req.timestamp ? req.timestamp.toDate().toLocaleString() : 'දැන්'}</p>
                     <p><strong>📞 පාරිභෝගික අංකය:</strong> <a href="tel:${phone}" style="color: white;">${phone}</a></p>
                     <p><strong>📍 ස්ථානය:</strong> ${locationHTML}</p>
-                    
-                    <!-- මෙන්න මේ අලුත් බොත්තම තමයි මාරු වෙන්න ඕනේ -->
                     <button class="btn-complete" onclick="completeRequest('${doc.id}')">Mark as Completed (වැඩේ අවසන්)</button>
                 </div>
               `;
@@ -118,7 +120,7 @@ function loadRequests(garagePhone) {
             });
         });
 
-        // අවසන් කළ ඉල්ලීම් (Completed) ලබා ගැනීම
+    // අවසන් කළ ඉල්ලීම් (Completed) ලබා ගැනීම
     db.collection("requests")
         .where("garagePhone", "==", garagePhone)
         .where("status", "==", "completed")
@@ -147,7 +149,6 @@ function loadRequests(garagePhone) {
                 completedList.innerHTML += card;
             });
         });
-
 }
 
 // Notification යැවීම
@@ -169,7 +170,6 @@ function triggerNotification() {
     }
 }
 
-
 // ඉල්ලීම භාර ගැනීම
 function acceptRequest(id) {
     db.collection("requests").doc(id).update({
@@ -186,7 +186,6 @@ function acceptRequest(id) {
 
 // ඉල්ලීමක් සම්පූර්ණයෙන්ම අවසන් කිරීම (Completed)
 window.completeRequest = function (id) {
-    // වැරදීමකින් බොත්තම එබුණොත් අහන්න Confirm එකක් දාමු
     if (confirm("මෙම වැඩය සම්පූර්ණයෙන්ම අවසන් කළ බව තහවුරු කරනවාද?")) {
         db.collection("requests").doc(id).update({
             status: "completed"
@@ -200,6 +199,39 @@ window.completeRequest = function (id) {
             });
     }
 }
+
+// Availability බොත්තමේ පෙනුම යාවත්කාලීන කිරීම
+function updateAvailabilityUI() {
+    const btn = document.getElementById('availabilityBtn');
+    if (!btn) return;
+    btn.style.display = "inline-block";
+
+    if (myGarageStatus === "online") {
+        btn.innerHTML = "🟢 Online (Available)";
+        btn.classList.remove("offline");
+    } else {
+        btn.innerHTML = "🔴 Offline (Closed)";
+        btn.classList.add("offline");
+    }
+}
+
+// ගරාජයේ Online / Offline තත්ත්වය මාරු කිරීම
+window.toggleAvailability = function () {
+    if (!myGarageDocId) return;
+
+    const newStatus = myGarageStatus === "online" ? "offline" : "online";
+    db.collection("garages").doc(myGarageDocId).update({
+        status: newStatus
+    })
+        .then(() => {
+            myGarageStatus = newStatus;
+            updateAvailabilityUI();
+        })
+        .catch((error) => {
+            console.error("Error updating availability:", error);
+            alert("තත්ත්වය වෙනස් කිරීමේදී දෝෂයක් ඇතිවිය!");
+        });
+};
 
 // ලොග් අවුට් වීම
 window.logout = function () {
